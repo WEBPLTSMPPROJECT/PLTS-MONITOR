@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WEB MONITOR PLTS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sun: #FFB300; --sg: #FF6F00; --teal: #00E5CC;
+      --green: #00E676; --red: #FF1744; --orange: #FF6D00;
+      --bg0: #020B18; --bg1: #051525; --bg2: #0A1E35;
+      --card: rgba(10,30,55,0.85); --bdr: rgba(0,229,204,0.2);
+      --txt: #E0F7FA; --mut: #78909C;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Exo 2', sans-serif; background: var(--bg0); color: var(--txt); min-height: 100vh; overflow-x: hidden; }
+    .bgl { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,179,0,0.07) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0,229,204,0.06) 0%, transparent 60%),
+                  linear-gradient(180deg, #020B18 0%, #051525 40%, #0A1E35 100%); }
+    .bgg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bgg::before { content: ''; position: absolute; inset: -50%;
+      background-image: linear-gradient(rgba(0,229,204,0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,204,0.04) 1px, transparent 1px);
+      background-size: 48px 48px; animation: gm 20s linear infinite; }
+    @keyframes gm { to { transform: translateY(48px); } }
+    .wrap { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 20px 40px; }
+    header { position: relative; text-align: center; padding: 32px 20px 26px; border-bottom: 1px solid var(--bdr); overflow: hidden; }
+    header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 60%; height: 1px; background: linear-gradient(90deg, transparent, var(--teal), var(--sun), var(--teal), transparent); }
+    .hicon { width: 56px; height: 56px; margin: 0 auto 12px;
+      background: radial-gradient(circle, var(--sun) 0%, var(--sg) 60%, transparent 100%);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px;
+      box-shadow: 0 0 30px rgba(255,179,0,0.5); animation: sp 4s ease-in-out infinite; }
+    @keyframes sp { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    .htitle { font-family: 'Orbitron', monospace; font-size: clamp(20px,4.5vw,40px); font-weight: 900; letter-spacing: 5px;
+      background: linear-gradient(135deg, var(--sun) 0%, #FFF176 40%, var(--teal) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hsub { font-size: 11px; letter-spacing: 3px; color: var(--mut); text-transform: uppercase; margin-top: 6px; }
+    .lbdg { display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3);
+      border-radius: 20px; padding: 3px 12px; font-size: 10px; color: var(--green); letter-spacing: 2px; margin-top: 10px; }
+    .ldot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: bk 1.2s infinite; }
+    @keyframes bk { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+    .clkval { font-family: 'Orbitron', monospace; font-size: 18px; color: var(--teal); letter-spacing: 2px; margin-top: 10px; }
+    .banner { margin: 24px 0 0; padding: 13px 20px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255,179,0,0.08), rgba(0,229,204,0.08));
+      border: 1px solid rgba(255,179,0,0.2);
+      display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--mut); }
+    .banner strong { color: var(--sun); }
+    .acb { margin: 10px 0 0; padding: 13px 20px; border-radius: 12px;
+      display: flex; align-items: center; gap: 12px; font-size: 12px; transition: all 0.4s; }
+    .acb.ok  { background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.3); color: var(--mut); }
+    .acb.warn{ background: rgba(255,109,0,0.08); border: 1px solid rgba(255,109,0,0.4); color: var(--mut); }
+    .acb.ok strong  { color: var(--green); }
+    .acb.warn strong{ color: var(--orange); }
+    .slbl { font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 3px; color: var(--teal);
+      text-transform: uppercase; margin: 32px 0 14px; display: flex; align-items: center; gap: 10px; }
+    .slbl::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--bdr), transparent); }
+    .tcard { background: var(--card); border: 1px solid rgba(255,179,0,0.25);
+      border-radius: 16px; padding: 22px 26px; position: relative; overflow: hidden; }
+    .tcard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--sun), var(--teal), var(--sun)); }
+    .thead { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+    .thl   { display: flex; align-items: center; gap: 10px; }
+    .tico  { width: 38px; height: 38px; border-radius: 10px; background: rgba(255,179,0,0.12);
+      color: var(--sun); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .tlbl  { font-family: 'Orbitron', monospace; font-size: 11px; letter-spacing: 2px; color: var(--sun); }
+    .tlbl small { display: block; font-family: 'Exo 2', sans-serif; font-size: 10px; color: var(--mut); letter-spacing: 1px; margin-top: 2px; }
+    .tbdg { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.3); font-family: 'Orbitron', monospace; }
+    .tbdg.pend { background: rgba(255,179,0,0.12); color: var(--sun); border-color: rgba(255,179,0,0.35); }
+    .tarow { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--mut);
+      letter-spacing: 1px; margin-bottom: 18px; padding: 9px 13px;
+      background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; }
+    .tv { color: var(--teal); font-family: 'Orbitron', monospace; font-size: 13px; letter-spacing: 2px; }
+    .tinp { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+    .tf   { display: flex; flex-direction: column; gap: 5px; }
+    .tf label { font-size: 10px; letter-spacing: 2px; color: var(--mut); text-transform: uppercase; }
+    .tf input[type=time] { background: rgba(0,0,0,0.35); border: 1px solid rgba(0,229,204,0.25);
+      border-radius: 10px; color: var(--teal); font-family: 'Orbitron', monospace; font-size: 20px;
+      padding: 9px 14px; outline: none; cursor: pointer; transition: border-color 0.3s; letter-spacing: 2px; width: 138px; }
+    .tf input[type=time]:focus { border-color: rgba(0,229,204,0.6); }
+    .tf input[type=time]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.4); cursor: pointer; }
+    .tarr { font-size: 20px; color: var(--mut); margin-top: 18px; }
+    .tbr  { display: flex; gap: 10px; flex-wrap: wrap; }
+    .bconf { display: flex; align-items: center; gap: 7px; padding: 9px 22px; border-radius: 10px;
+      border: 1px solid rgba(0,230,118,0.4); background: rgba(0,230,118,0.12); color: var(--green);
+      font-family: 'Orbitron', monospace; font-size: 11px; letter-spacing: 2px; cursor: pointer; transition: all 0.25s; }
+    .bconf:hover { background: rgba(0,230,118,0.22); box-shadow: 0 0 12px rgba(0,230,118,0.3); }
+    .bconf:active { transform: scale(0.97); }
+    .brst { display: flex; align-items: center; gap: 7px; padding: 9px 22px; border-radius: 10px;
+      border: 1px solid rgba(255,23,68,0.3); background: rgba(255,23,68,0.08); color: var(--red);
+      font-family: 'Orbitron', monospace; font-size: 11px; letter-spacing: 2px; cursor: pointer; transition: all 0.25s; }
+    .brst:hover { background: rgba(255,23,68,0.18); }
+    .brst:active { transform: scale(0.97); }
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: rgba(10,30,55,0.97); border: 1px solid rgba(0,229,204,0.3);
+      border-radius: 12px; padding: 11px 22px; font-size: 12px; color: var(--teal);
+      letter-spacing: 1px; z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.ok { border-color: rgba(0,230,118,0.4); color: var(--green); }
+    .toast.er { border-color: rgba(255,23,68,0.4); color: var(--red); }
+    .mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .mc { background: var(--card); border: 1px solid var(--bdr); border-radius: 16px; padding: 22px 24px;
+      position: relative; overflow: hidden; transition: transform 0.3s, border-color 0.3s; }
+    .mc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--teal), var(--sun)); opacity: 0; transition: opacity 0.3s; }
+    .mc:hover { transform: translateY(-3px); border-color: rgba(0,229,204,0.4); }
+    .mc:hover::before { opacity: 1; }
+    .mh { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .mi { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .it { background: rgba(0,229,204,0.12); color: var(--teal); }
+    .is { background: rgba(255,179,0,0.12); color: var(--sun); }
+    .ig { background: rgba(0,230,118,0.12); color: var(--green); }
+    .ib { background: rgba(33,150,243,0.12); color: #42A5F5; }
+    .io { background: rgba(255,109,0,0.12); color: var(--orange); }
+    .ml { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--mut); font-weight: 600; }
+    .mv { font-family: 'Orbitron', monospace; font-size: clamp(30px,4.5vw,44px); font-weight: 700;
+      line-height: 1; color: #fff; display: flex; align-items: baseline; gap: 5px; }
+    .mu { font-size: 14px; color: var(--mut); font-family: 'Exo 2', sans-serif; font-weight: 400; }
+    .mc.bc .mv { color: var(--green); }
+    .mc.pc .mv { color: var(--sun); }
+    .mc.acc .mv{ color: var(--orange); }
+    .btrack { margin-top: 14px; height: 7px; border-radius: 8px; background: rgba(255,255,255,0.06); overflow: hidden; }
+    .bfill  { height: 100%; border-radius: 8px;
+      background: linear-gradient(90deg, #F44336, #FFC107 40%, var(--green));
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+    .blbls { display: flex; justify-content: space-between; font-size: 10px; color: var(--mut); margin-top: 5px; }
+    .rgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .rc { background: var(--card); border: 1px solid var(--bdr); border-radius: 16px; padding: 22px;
+      display: flex; flex-direction: column; gap: 16px; transition: border-color 0.3s; }
+    .rc.ron  { border-color: rgba(0,230,118,0.4); }
+    .rc.roff { border-color: rgba(255,23,68,0.25); }
+    .rh { display: flex; align-items: flex-start; justify-content: space-between; }
+    .rname { font-family: 'Orbitron', monospace; font-size: 12px; letter-spacing: 1.5px; color: var(--txt); font-weight: 700; }
+    .rsub  { font-size: 9px; color: var(--sun); letter-spacing: 0.5px; margin-top: 3px; }
+    .rbdg  { padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 2px; transition: all 0.4s; }
+    .bon  { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.4); }
+    .boff { background: rgba(255,23,68,0.12);  color: var(--red);   border: 1px solid rgba(255,23,68,0.3); }
+    .trow { display: flex; align-items: center; justify-content: center; }
+    .tw { position: relative; display: inline-block; width: 62px; height: 30px; }
+    .tw input { opacity: 0; width: 0; height: 0; }
+    .ts { position: absolute; inset: 0; cursor: pointer; border-radius: 30px; transition: 0.4s;
+      background: rgba(255,23,68,0.25); border: 1px solid rgba(255,23,68,0.5); }
+    .ts::before { content: ''; position: absolute; width: 22px; height: 22px; left: 3px; top: 3px;
+      border-radius: 50%; background: var(--red); transition: 0.4s; box-shadow: 0 0 8px rgba(255,23,68,0.6); }
+    .tw input:checked + .ts { background: rgba(0,230,118,0.2); border-color: rgba(0,230,118,0.5); }
+    .tw input:checked + .ts::before { transform: translateX(31px); background: var(--green); box-shadow: 0 0 12px rgba(0,230,118,0.7); }
+    .pzlbl { font-size: 10px; letter-spacing: 0.5px; color: var(--orange); text-align: center; margin-top: -6px; }
+    footer { margin-top: 52px; padding: 26px 0; border-top: 1px solid var(--bdr); text-align: center; }
+    .flogo { font-family: 'Orbitron', monospace; font-size: 12px; letter-spacing: 3px; color: var(--mut); margin-bottom: 6px; }
+    .fsince { font-size: 11px; letter-spacing: 2px; color: rgba(120,144,156,0.6); }
+    .fsince span { color: var(--teal); font-weight: 700; }
+    @media (max-width: 600px) {
+      .mgrid, .rgrid { grid-template-columns: 1fr; }
+      .banner, .acb  { flex-direction: column; text-align: center; }
+      .tinp { flex-direction: column; align-items: flex-start; }
+      .tarr { display: none; }
+      .tf input[type=time] { font-size: 18px; width: 128px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bgl"></div>
+  <div class="bgg"></div>
+  <div class="toast" id="toast"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="hicon">&#9728;</div>
+      <div class="htitle">WEB MONITOR PLTS</div>
+      <div class="hsub">Sistem Monitoring Panel Tenaga Surya &mdash; Real-Time</div>
+      <div><span class="lbdg"><span class="ldot"></span>LIVE MONITORING</span></div>
+      <div class="clkval" id="clk">--:--:--</div>
+    </header>
+
+    <div class="banner">
+      <div style="font-size:20px;flex-shrink:0">&#9889;</div>
+      <div>
+        <strong>Timer</strong>: Lampu Utama &amp; Output AC ON | Inverter ON jika PLN tidak ada &nbsp;|&nbsp;
+        <strong>PZEM</strong>: PLN 0V &rarr; Inverter &amp; Lampu Panel ON &nbsp;|&nbsp;
+        <strong>Manual</strong>: Semua relay bisa dikontrol langsung
+      </div>
+    </div>
+
+    <div class="acb ok" id="acBanner">
+      <div style="font-size:18px;flex-shrink:0">&#9889;</div>
+      <div id="acBTxt"><strong>Menunggu data PZEM...</strong></div>
+    </div>
+
+    <div class="slbl">&#9670; Pengaturan Timer Auto &mdash; Inverter, Lampu Utama &amp; Output AC</div>
+    <div class="tcard">
+      <div class="thead">
+        <div class="thl">
+          <div class="tico">&#9200;</div>
+          <div class="tlbl">JADWAL OTOMATIS
+            <small>Inverter, Lampu Utama &amp; Output AC ON/OFF sesuai waktu ini</small>
+          </div>
+        </div>
+        <div class="tbdg" id="tbdg">AKTIF</div>
+      </div>
+      <div class="tarow">
+        <span class="tv">&#9200;</span>
+        <span style="color:var(--mut);font-size:11px">Timer aktif:</span>
+        <span class="tv" id="tad">18:00</span>
+        <span style="color:var(--mut);font-size:11px">sampai</span>
+        <span class="tv" id="tae">21:00</span>
+        <span style="color:var(--mut);font-size:10px">(Inverter + Lampu Utama + Output AC ON)</span>
+      </div>
+      <div class="tinp">
+        <div class="tf">
+          <label>Jam Mulai</label>
+          <input type="time" id="ts" value="18:00">
+        </div>
+        <div class="tarr">&#8594;</div>
+        <div class="tf">
+          <label>Jam Selesai</label>
+          <input type="time" id="te" value="21:00">
+        </div>
+      </div>
+      <div class="tbr">
+        <button class="bconf" onclick="cfmTimer()">&#10003; &nbsp;CONFIRM</button>
+        <button class="brst"  onclick="rstTimer()">&#8634; &nbsp;RESET DEFAULT</button>
+      </div>
+    </div>
+
+    <div class="slbl">&#9670; Data Sensor DC (Baterai)</div>
+    <div class="mgrid">
+      <div class="mc">
+        <div class="mh"><div class="mi it">&#9889;</div><div class="ml">Tegangan Baterai</div></div>
+        <div class="mv"><span id="v">--</span><span class="mu">V</span></div>
+      </div>
+      <div class="mc pc">
+        <div class="mh"><div class="mi is">&#9728;</div><div class="ml">Tegangan Panel Surya</div></div>
+        <div class="mv"><span id="vp">--</span><span class="mu">V</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi ib">&#9195;</div><div class="ml">Arus DC</div></div>
+        <div class="mv"><span id="ic">--</span><span class="mu">A</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi is">&#9889;</div><div class="ml">Daya DC</div></div>
+        <div class="mv"><span id="pw">--</span><span class="mu">W</span></div>
+      </div>
+      <div class="mc bc">
+        <div class="mh"><div class="mi ig">&#128267;</div><div class="ml">Level Baterai</div></div>
+        <div class="mv"><span id="bt">--</span><span class="mu">%</span></div>
+        <div class="btrack"><div class="bfill" id="bf" style="width:0%"></div></div>
+        <div class="blbls"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi it">&#9196;</div><div class="ml">Energi Hari Ini</div></div>
+        <div class="mv"><span id="en">--</span><span class="mu">Wh</span></div>
+      </div>
+    </div>
+
+    <div class="slbl">&#9670; Data Sensor AC (PZEM-004T)</div>
+    <div class="mgrid">
+      <div class="mc acc">
+        <div class="mh"><div class="mi io">&#9889;</div><div class="ml">Tegangan AC</div></div>
+        <div class="mv"><span id="acv">--</span><span class="mu">V</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi ib">&#9195;</div><div class="ml">Arus AC</div></div>
+        <div class="mv"><span id="aci">--</span><span class="mu">A</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi is">&#9889;</div><div class="ml">Daya AC</div></div>
+        <div class="mv"><span id="acp">--</span><span class="mu">W</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi it">~</div><div class="ml">Frekuensi</div></div>
+        <div class="mv"><span id="acf">--</span><span class="mu">Hz</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi ig">&#10003;</div><div class="ml">Power Factor</div></div>
+        <div class="mv"><span id="acpf">--</span></div>
+      </div>
+    </div>
+
+    <div class="slbl">&#9670; Kontrol Relay</div>
+    <div class="rgrid">
+      <div class="rc roff" id="cr1">
+        <div class="rh">
+          <div>
+            <div class="rname">INVERTER</div>
+            <div class="rsub">[MANUAL | Timer(PLN tdk ada) | PZEM 0V]</div>
+          </div>
+          <div class="rbdg boff" id="r1">MATI</div>
+        </div>
+        <div class="trow">
+          <label class="tw">
+            <input type="checkbox" id="t1" onchange="setR(1,this.checked?1:0)">
+            <span class="ts"></span>
+          </label>
+        </div>
+        <div class="pzlbl">&#9728; Timer ON &amp; PLN&lt;50V &rarr; ON &nbsp;|&nbsp; &#9889; PZEM 0V &rarr; ON</div>
+      </div>
+      <div class="rc roff" id="cr2">
+        <div class="rh">
+          <div>
+            <div class="rname">LAMPU UTAMA</div>
+            <div class="rsub">[AUTO + PZEM]</div>
+          </div>
+          <div class="rbdg boff" id="r2">MATI</div>
+        </div>
+        <div class="trow">
+          <label class="tw">
+            <input type="checkbox" id="t2" onchange="setR(2,this.checked?1:0)">
+            <span class="ts"></span>
+          </label>
+        </div>
+        <div class="pzlbl">&#9728; Auto timer &nbsp;|&nbsp; &#9889; PZEM override saat AC drop</div>
+      </div>
+      <div class="rc roff" id="cr3">
+        <div class="rh">
+          <div>
+            <div class="rname">OUTPUT AC</div>
+            <div class="rsub">[AUTO + PZEM]</div>
+          </div>
+          <div class="rbdg boff" id="r3">MATI</div>
+        </div>
+        <div class="trow">
+          <label class="tw">
+            <input type="checkbox" id="t3" onchange="setR(3,this.checked?1:0)">
+            <span class="ts"></span>
+          </label>
+        </div>
+        <div class="pzlbl">&#9728; Auto timer &nbsp;|&nbsp; &#9889; PZEM override saat AC drop</div>
+      </div>
+      <div class="rc roff" id="cr4">
+        <div class="rh">
+          <div>
+            <div class="rname">LAMPU PANEL</div>
+            <div class="rsub">[MANUAL + PZEM]</div>
+          </div>
+          <div class="rbdg boff" id="r4">MATI</div>
+        </div>
+        <div class="trow">
+          <label class="tw">
+            <input type="checkbox" id="t4" onchange="setR(4,this.checked?1:0)">
+            <span class="ts"></span>
+          </label>
+        </div>
+        <div class="pzlbl">&#9889; PLN 0V &rarr; ON &nbsp;|&nbsp; PLN &ge;50V &rarr; OFF</div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="flogo">&#9728; WEB MONITOR PLTS &#9728;</div>
+      <div class="fsince">SINCE <span>2026</span> &nbsp;&mdash;&nbsp; BY <span>MINIONS PROJECT</span></div>
+    </footer>
+  </div>
+
+  <script>
+    // ===== GANTI URL INI SESUAI TUNNEL KAMU =====
+    var BASE = "https://77ada569d24610c1-104-28-159-67.serveousercontent.com";
+    // ============================================
+
+    var tPend = false;
+
+    function fmt(h,m){ return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
+
+    var tTimer = null;
+    function toast(msg, type){
+      var t = document.getElementById('toast');
+      t.innerHTML = msg;
+      t.className = 'toast show ' + (type||'');
+      if(tTimer) clearTimeout(tTimer);
+      tTimer = setTimeout(function(){ t.className='toast'; }, 2800);
+    }
+
+    function updTimer(sh,sm,eh,em){
+      document.getElementById('tad').innerText = fmt(sh,sm);
+      document.getElementById('tae').innerText = fmt(eh,em);
+      var b = document.getElementById('tbdg');
+      b.className = 'tbdg' + (tPend?' pend':'');
+      b.innerText  = tPend ? 'PENDING...' : 'AKTIF';
+    }
+
+    function cfmTimer(){
+      var s=document.getElementById('ts').value, e=document.getElementById('te').value;
+      if(!s||!e){ toast('Isi jam mulai & selesai dulu!','er'); return; }
+      var ps=s.split(':'), pe=e.split(':');
+      var sh=+ps[0], sm=+ps[1], eh=+pe[0], em=+pe[1];
+      if(sh===eh&&sm===em){ toast('Jam mulai & selesai tidak boleh sama!','er'); return; }
+      fetch(BASE+'/settimer?start_h='+sh+'&start_m='+sm+'&end_h='+eh+'&end_m='+em)
+        .then(function(r){
+          if(r.ok){ tPend=false; updTimer(sh,sm,eh,em); toast('&#10003; Timer: '+fmt(sh,sm)+' &ndash; '+fmt(eh,em),'ok'); }
+          else toast('Gagal simpan timer!','er');
+        }).catch(function(){ toast('Gagal konek ESP32!','er'); });
+    }
+
+    function rstTimer(){
+      fetch(BASE+'/settimer?start_h=18&start_m=0&end_h=21&end_m=0')
+        .then(function(r){
+          if(r.ok){
+            tPend=false;
+            document.getElementById('ts').value='18:00';
+            document.getElementById('te').value='21:00';
+            updTimer(18,0,21,0);
+            toast('&#8634; Reset ke default: 18:00 &ndash; 21:00','');
+          } else toast('Gagal reset!','er');
+        }).catch(function(){ toast('Gagal konek ESP32!','er'); });
+    }
+
+    ['ts','te'].forEach(function(id){
+      document.getElementById(id).addEventListener('change', function(){
+        tPend=true; document.getElementById('tbdg').className='tbdg pend';
+        document.getElementById('tbdg').innerText='PENDING...';
+      });
+    });
+
+    function updData(){
+      fetch(BASE+'/data').then(function(r){return r.json();}).then(function(d){
+        document.getElementById('v').innerText   = d.v.toFixed(2);
+        document.getElementById('vp').innerText  = d.vp.toFixed(2);
+        document.getElementById('ic').innerText  = d.i.toFixed(3);
+        document.getElementById('pw').innerText  = d.p.toFixed(1);
+        document.getElementById('bt').innerText  = d.b;
+        document.getElementById('en').innerText  = d.e.toFixed(1);
+        document.getElementById('bf').style.width= d.b+'%';
+        document.getElementById('acv').innerText = d.acV.toFixed(1);
+        document.getElementById('aci').innerText = d.acI.toFixed(2);
+        document.getElementById('acp').innerText = d.acP.toFixed(1);
+        document.getElementById('acf').innerText = d.acF.toFixed(1);
+        document.getElementById('acpf').innerText= d.acPF.toFixed(2);
+
+        if(!tPend){
+          updTimer(d.tsh, d.tsm, d.teh, d.tem);
+          document.getElementById('ts').value = fmt(d.tsh, d.tsm);
+          document.getElementById('te').value = fmt(d.teh, d.tem);
+        }
+
+        var bn = document.getElementById('acBanner');
+        var bt2= document.getElementById('acBTxt');
+        if(d.acV < 50){
+          bn.className='acb warn';
+          bt2.innerHTML='&#9889; <strong>PLN tidak ada / lemah: '+d.acV.toFixed(1)+'V (&lt;50V)</strong> &rarr; Inverter &amp; Lampu Panel ON otomatis';
+        } else {
+          bn.className='acb ok';
+          bt2.innerHTML='&#9889; <strong>PLN ada: '+d.acV.toFixed(1)+'V (&ge;50V)</strong> &mdash; Inverter &amp; Lampu Panel OFF | Timer kontrol R2 &amp; R3';
+        }
+
+        [1,2,3,4].forEach(function(n){
+          var on = d['r'+n] === 1;
+          document.getElementById('r'+n).innerText   = on ? 'NYALA' : 'MATI';
+          document.getElementById('r'+n).className   = 'rbdg ' + (on?'bon':'boff');
+          document.getElementById('cr'+n).className  = 'rc ' + (on?'ron':'roff');
+          document.getElementById('t'+n).checked     = on;
+        });
+      }).catch(function(e){ console.warn('Data error:',e); });
+    }
+
+    function setR(n, s){
+      fetch(BASE+'/relay?r='+n+'&s='+s)
+        .then(function(r){ if(r.ok) updData(); })
+        .catch(function(e){ console.warn('Relay error:',e); });
+    }
+
+    function updClk(){
+      document.getElementById('clk').innerText =
+        new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    }
+
+    updData(); updClk();
+    setInterval(updData, 2000);
+    setInterval(updClk,  1000);
+  </script>
+</body>
+</html>
