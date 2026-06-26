@@ -356,9 +356,23 @@
   </div>
 
   <script>
-    // ===== GANTI URL INI SESUAI TUNNEL KAMU =====
-    var BASE = "https://be7d97833f500d5c-104-28-156-112.serveousercontent.com";
-    // ============================================
+    // ===== URL TUNNEL DIAMBIL OTOMATIS DARI GITHUB =====
+    // GANTI bagian USERNAME_GITHUB_KAMU sesuai username GitHub kamu:
+    var TUNNEL_URL_SOURCE = "https://raw.githubusercontent.com/WEBPLTSMPPROJECT/PLTS-MONITOR/main/tunnel-url.txt";
+    var BASE = null;
+
+    async function refreshBase(){
+      try{
+        var r = await fetch(TUNNEL_URL_SOURCE + "?t=" + Date.now());
+        var t = await r.text();
+        var newBase = t.trim();
+        if(newBase && newBase.indexOf("http") === 0 && newBase !== BASE){
+          BASE = newBase;
+          console.log("BASE diupdate ke:", BASE);
+        }
+      }catch(e){ console.warn("Gagal ambil URL tunnel terbaru:", e); }
+    }
+    // =====================================================
 
     var tPend = false;
 
@@ -415,7 +429,9 @@
     });
 
     function updData(){
-      fetch(BASE+'/data').then(function(r){return r.json();}).then(function(d){
+      refreshBase().then(function(){
+        if(!BASE) { console.warn('BASE belum siap, skip fetch data'); return; }
+        fetch(BASE+'/data').then(function(r){return r.json();}).then(function(d){
         document.getElementById('v').innerText   = d.v.toFixed(2);
         document.getElementById('vp').innerText  = d.vp.toFixed(2);
         document.getElementById('ic').innerText  = d.i.toFixed(3);
@@ -453,6 +469,7 @@
           document.getElementById('t'+n).checked     = on;
         });
       }).catch(function(e){ console.warn('Data error:',e); });
+      });
     }
 
     function setR(n, s){
