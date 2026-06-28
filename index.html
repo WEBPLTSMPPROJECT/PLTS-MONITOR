@@ -492,7 +492,14 @@
         new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     }
 
-    refreshBase().then(function(){ updData(); });
+    if (BASE) {
+      // BASE sudah ada di cache → tampilkan data langsung, refresh GitHub di belakang layar
+      updData();
+      refreshBase();
+    } else {
+      // BASE belum ada (kunjungan pertama) → harus tunggu ambil dari GitHub dulu
+      refreshBase().then(function(){ updData(); });
+    }
     updClk();
     setInterval(updData, 2000);
     setInterval(updClk,  1000);
