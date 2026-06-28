@@ -369,7 +369,7 @@
     // ===== URL TUNNEL DIAMBIL OTOMATIS DARI GITHUB =====
     // GANTI bagian USERNAME_GITHUB_KAMU sesuai username GitHub kamu:
     var TUNNEL_URL_SOURCE = "https://raw.githubusercontent.com/WEBPLTSMPPROJECT/PLTS-MONITOR/main/tunnel-url.txt";
-    var BASE = null;
+    var BASE = localStorage.getItem('tunnelBase') || null;
 
     async function refreshBase(){
       try{
@@ -378,6 +378,7 @@
         var newBase = t.trim();
         if(newBase && newBase.indexOf("http") === 0 && newBase !== BASE){
           BASE = newBase;
+          localStorage.setItem('tunnelBase', BASE);
           console.log("BASE diupdate ke:", BASE);
         }
       }catch(e){ console.warn("Gagal ambil URL tunnel terbaru:", e); }
@@ -439,9 +440,8 @@
     });
 
     function updData(){
-      refreshBase().then(function(){
-        if(!BASE) { console.warn('BASE belum siap, skip fetch data'); return; }
-        fetch(BASE+'/data').then(function(r){return r.json();}).then(function(d){
+      if(!BASE) { console.warn('BASE belum siap, skip fetch data'); return; }
+      fetch(BASE+'/data').then(function(r){return r.json();}).then(function(d){
         document.getElementById('v').innerText   = d.v.toFixed(2);
         document.getElementById('vp').innerText  = d.vp.toFixed(2);
         document.getElementById('ic').innerText  = d.i.toFixed(3);
@@ -479,7 +479,6 @@
           document.getElementById('t'+n).checked     = on;
         });
       }).catch(function(e){ console.warn('Data error:',e); });
-      });
     }
 
     function setR(n, s){
@@ -493,9 +492,11 @@
         new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     }
 
-    updData(); updClk();
+    refreshBase().then(function(){ updData(); });
+    updClk();
     setInterval(updData, 2000);
     setInterval(updClk,  1000);
+    setInterval(refreshBase, 20000);
   </script>
 </body>
 </html>
