@@ -589,7 +589,13 @@
     }
 
     function setR(n, s){
-      if(!adminToken){ toast('&#128274; Login admin dulu!','er'); openLogin(); updData(); return; }
+      if(!adminToken){
+        // Balikkan checkbox langsung sebelum user sempat lihat perubahan
+        document.getElementById('t'+n).checked = !s;
+        toast('&#128274; Login admin dulu!','er');
+        openLogin();
+        return;
+      }
       fetch(BASE+'/relay?r='+n+'&s='+s)
         .then(function(r){ if(r.ok) updData(); })
         .catch(function(e){ console.warn('Relay error:',e); });
