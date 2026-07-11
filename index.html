@@ -297,7 +297,7 @@
       <div>
         <strong>Timer</strong>: Output AC &amp; Lampu Utama ON otomatis selama jam aktif &nbsp;|&nbsp;
         <strong>PZEM</strong>: Inverter, Lampu Utama &amp; Lampu Panel ON otomatis saat PLN tidak ada &nbsp;|&nbsp;
-        <strong>Manual</strong>: Semua relay (1-4) bisa dikontrol langsung
+        <strong>Manual</strong>: Semua relay bisa ditoggle, tapi R1/R2/R4 otomatis kembali ke PZEM &plusmn;1 detik (Output AC bertahan sampai ditekan AUTO)
       </div>
     </div>
 
@@ -402,7 +402,7 @@
         <div class="rh">
           <div>
             <div class="rname">INVERTER</div>
-            <div class="rsub">[MANUAL + PZEM]</div>
+            <div class="rsub">[MANUAL SESAAT + PZEM]</div>
           </div>
           <div class="rbdg boff" id="r1">MATI</div>
         </div>
@@ -416,13 +416,15 @@
         <div style="display:flex;align-items:center;justify-content:center">
           <span class="modebdg auto" id="m1">AUTO</span>
         </div>
-        <button class="autobtn" id="ab1" onclick="setAuto(1)">&#8635; KEMBALI KE AUTO</button>
+        <div style="font-size:9px;color:var(--mut);text-align:center;letter-spacing:0.5px">
+          PZEM selalu berlaku &mdash; manual otomatis kembali &plusmn;1 detik
+        </div>
       </div>
       <div class="rc roff" id="cr2">
         <div class="rh">
           <div>
             <div class="rname">LAMPU UTAMA</div>
-            <div class="rsub">[MANUAL | TIMER + PZEM]</div>
+            <div class="rsub">[MANUAL SESAAT | TIMER + PZEM]</div>
           </div>
           <div class="rbdg boff" id="r2">MATI</div>
         </div>
@@ -436,7 +438,9 @@
         <div style="display:flex;align-items:center;justify-content:center">
           <span class="modebdg auto" id="m2">AUTO</span>
         </div>
-        <button class="autobtn" id="ab2" onclick="setAuto(2)">&#8635; KEMBALI KE AUTO</button>
+        <div style="font-size:9px;color:var(--mut);text-align:center;letter-spacing:0.5px">
+          Timer/PZEM selalu berlaku &mdash; manual otomatis kembali &plusmn;1 detik
+        </div>
       </div>
       <div class="rc roff" id="cr3">
         <div class="rh">
@@ -462,7 +466,7 @@
         <div class="rh">
           <div>
             <div class="rname">LAMPU PANEL</div>
-            <div class="rsub">[MANUAL + PZEM]</div>
+            <div class="rsub">[MANUAL SESAAT + PZEM]</div>
           </div>
           <div class="rbdg boff" id="r4">MATI</div>
         </div>
@@ -476,7 +480,9 @@
         <div style="display:flex;align-items:center;justify-content:center">
           <span class="modebdg auto" id="m4">AUTO</span>
         </div>
-        <button class="autobtn" id="ab4" onclick="setAuto(4)">&#8635; KEMBALI KE AUTO</button>
+        <div style="font-size:9px;color:var(--mut);text-align:center;letter-spacing:0.5px">
+          PZEM selalu berlaku &mdash; manual otomatis kembali &plusmn;1 detik
+        </div>
       </div>
     </div>
 
@@ -511,18 +517,29 @@
             <div class="adm-card"><div class="adm-lbl">WiFi RSSI</div><div class="adm-val" id="aRssi">--</div></div>
             <div class="adm-card"><div class="adm-lbl">IP LOKAL</div><div class="adm-val" id="aIp">--</div></div>
             <div class="adm-card"><div class="adm-lbl">IP AP</div><div class="adm-val" id="aApIp">--</div></div>
-            <div class="adm-card"><div class="adm-lbl">PASSWORD</div><div class="adm-val" id="aCurPass">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">PW LOGIN</div><div class="adm-val" id="aCurPass">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">PW PANEL</div><div class="adm-val" id="aCurCPPass">--</div></div>
           </div>
           <button class="adm-btn" onclick="loadAdmStatus()">&#8635; REFRESH</button>
         </div>
         <div class="adm-pane" id="admPass" style="display:none">
           <div class="adm-form">
+            <div class="adm-sub">Password LOGIN (tombol header, kontrol relay &amp; timer)</div>
             <label class="adm-lbl">Password Baru</label>
             <input type="password" id="newPass1" placeholder="Password baru (min 4 karakter)">
             <label class="adm-lbl">Konfirmasi</label>
             <input type="password" id="newPass2" placeholder="Ulangi password baru">
-            <button class="adm-btn" onclick="doSetPassword()">&#10003; SIMPAN PASSWORD</button>
+            <button class="adm-btn" onclick="doSetPassword()">&#10003; SIMPAN PASSWORD LOGIN</button>
             <div class="adm-msg" id="passMsg"></div>
+          </div>
+          <div class="adm-form" style="margin-top:20px">
+            <div class="adm-sub">Password CONTROL PANEL (panel ini sendiri)</div>
+            <label class="adm-lbl">Password Baru</label>
+            <input type="password" id="newCPPass1" placeholder="Password baru (min 4 karakter)">
+            <label class="adm-lbl">Konfirmasi</label>
+            <input type="password" id="newCPPass2" placeholder="Ulangi password baru">
+            <button class="adm-btn" onclick="doSetCPPassword()">&#10003; SIMPAN PASSWORD PANEL</button>
+            <div class="adm-msg" id="cpPassMsg"></div>
           </div>
         </div>
         <div class="adm-pane" id="admCal" style="display:none">
@@ -567,33 +584,40 @@
     var TUNNEL_URL_SOURCE = "https://raw.githubusercontent.com/WEBPLTSMPPROJECT/PLTS-MONITOR/main/tunnel-url.txt";
     var BASE = localStorage.getItem('tunnelBase') || null;
 
-    // ===== SISTEM LOGIN ADMIN =====
+    // ===== SISTEM LOGIN ADMIN (tombol header, kontrol relay & timer) =====
+    // Token ini TERPISAH dari cpToken (Control Panel) di bawah.
     var adminToken = localStorage.getItem('adminToken') || null;
 
     function updAdminBtn(){
       var b = document.getElementById('adminBtn');
-      var locked = document.getElementById('cpLocked');
-      var unlocked = document.getElementById('cpUnlocked');
       if(adminToken){
         b.classList.add('logged'); b.innerHTML='&#128275; LOGOUT';
+      } else {
+        b.classList.remove('logged'); b.innerHTML='&#128274; LOGIN';
+      }
+    }
+
+    // ===== CONTROL PANEL — password & token SENDIRI, beda dari LOGIN header =====
+    var cpToken = localStorage.getItem('cpToken') || null;
+
+    function updCPPanel(){
+      var locked = document.getElementById('cpLocked');
+      var unlocked = document.getElementById('cpUnlocked');
+      if(cpToken){
         if(locked) locked.style.display = 'none';
         if(unlocked){ unlocked.style.display = 'block'; loadAdmStatus(); }
       } else {
-        b.classList.remove('logged'); b.innerHTML='&#128274; LOGIN';
         if(locked) locked.style.display = 'block';
         if(unlocked) unlocked.style.display = 'none';
       }
     }
 
-    // Control Panel di bawah punya kotak password sendiri (terpisah dari
-    // tombol LOGIN di header), tapi keduanya memakai token admin yang sama
-    // di ESP32 — jadi login lewat salah satu otomatis membuka yang lain juga.
     function cpLogin(){
       if(!BASE){ document.getElementById('cpLoginErr').innerText = 'BASE URL belum siap, coba lagi.'; return; }
       var pass = document.getElementById('cpPass').value;
       if(!pass){ document.getElementById('cpLoginErr').innerText = 'Password tidak boleh kosong.'; return; }
       document.getElementById('cpLoginErr').innerText = '';
-      fetch(BASE+'/login?password='+encodeURIComponent(pass))
+      fetch(BASE+'/cplogin?password='+encodeURIComponent(pass))
         .then(function(r){
           if(!r.ok){ throw new Error('bad'); }
           return r.text();
@@ -601,10 +625,10 @@
         .then(function(tok){
           tok = tok.trim();
           if(!tok){ throw new Error('empty'); }
-          adminToken = tok;
-          localStorage.setItem('adminToken', adminToken);
+          cpToken = tok;
+          localStorage.setItem('cpToken', cpToken);
           document.getElementById('cpPass').value = '';
-          updAdminBtn();
+          updCPPanel();
           toast('&#10003; Control panel terbuka','ok');
         })
         .catch(function(){
@@ -613,11 +637,11 @@
     }
 
     function cpLogout(){
-      if(!confirm('Kunci Control Panel & logout admin?')) return;
-      adminToken = null;
-      localStorage.removeItem('adminToken');
-      updAdminBtn();
-      toast('Logout berhasil','');
+      if(!confirm('Kunci Control Panel & logout?')) return;
+      cpToken = null;
+      localStorage.removeItem('cpToken');
+      updCPPanel();
+      toast('Logout Control Panel berhasil','');
     }
 
     document.getElementById('cpPass').addEventListener('keydown', function(e){
@@ -882,16 +906,19 @@
       refreshBase().then(function(){ updData(); });
     }
     updAdminBtn();
+    updCPPanel();
     updClk();
     setInterval(updData, 2000);
     setInterval(updClk,  1000);
     setInterval(refreshBase, 20000);
 
-    // ===== ADMIN PANEL JS =====
-    function admFetch(path){
-      return fetch(BASE+path+'?token='+encodeURIComponent(adminToken))
+    // ===== CONTROL PANEL JS (pakai cpToken, BUKAN adminToken) =====
+    // qs (opsional): parameter tambahan, misal 'newpass=xxxx&foo=bar'
+    function admFetch(path, qs){
+      var url = BASE+path+'?token='+encodeURIComponent(cpToken)+(qs?('&'+qs):'');
+      return fetch(url)
         .then(function(r){
-          if(r.status===401){ adminToken=null; localStorage.removeItem('adminToken'); updAdminBtn(); toast('Sesi expired, login ulang','er'); throw new Error('401'); }
+          if(r.status===401){ cpToken=null; localStorage.removeItem('cpToken'); updCPPanel(); toast('Sesi Control Panel expired, login ulang','er'); throw new Error('401'); }
           return r;
         });
     }
@@ -913,21 +940,38 @@
         document.getElementById('aRssi').innerText    = d.rssi+' dBm';
         document.getElementById('aIp').innerText      = d.ip;
         document.getElementById('aApIp').innerText    = d.apIP;
-        document.getElementById('aCurPass').innerText = d.password;
+        document.getElementById('aCurPass').innerText = d.loginPassword;
+        var cpEl=document.getElementById('aCurCPPass'); if(cpEl) cpEl.innerText = d.cpPassword;
       }).catch(function(){});
     }
 
+    // Ganti password LOGIN (tombol header, kontrol relay & timer)
     function doSetPassword(){
       var p1=document.getElementById('newPass1').value.trim();
       var p2=document.getElementById('newPass2').value.trim();
       var msg=document.getElementById('passMsg');
       if(p1.length<4){ msg.className='adm-msg er'; msg.innerText='Password minimal 4 karakter!'; return; }
       if(p1!==p2){ msg.className='adm-msg er'; msg.innerText='Password tidak cocok!'; return; }
-      admFetch('/admin/setpassword&newpass='+encodeURIComponent(p1))
+      admFetch('/admin/setpassword','newpass='+encodeURIComponent(p1))
         .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
-        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Password diubah! Silakan login ulang.';
-          adminToken=null; localStorage.removeItem('adminToken');
-          setTimeout(function(){ updAdminBtn(); }, 1500); })
+        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Password LOGIN berhasil diubah!';
+          document.getElementById('newPass1').value=''; document.getElementById('newPass2').value='';
+          loadAdmStatus(); })
+        .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan password!'; });
+    }
+
+    // Ganti password CONTROL PANEL (panel ini sendiri)
+    function doSetCPPassword(){
+      var p1=document.getElementById('newCPPass1').value.trim();
+      var p2=document.getElementById('newCPPass2').value.trim();
+      var msg=document.getElementById('cpPassMsg');
+      if(p1.length<4){ msg.className='adm-msg er'; msg.innerText='Password minimal 4 karakter!'; return; }
+      if(p1!==p2){ msg.className='adm-msg er'; msg.innerText='Password tidak cocok!'; return; }
+      admFetch('/admin/setcppassword','newpass='+encodeURIComponent(p1))
+        .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Password Control Panel diubah! Silakan login ulang.';
+          cpToken=null; localStorage.removeItem('cpToken');
+          setTimeout(function(){ updCPPanel(); }, 1500); })
         .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan password!'; });
     }
 
@@ -946,11 +990,11 @@
       var msg=document.getElementById('calMsg');
       var qs='';
       for(var i=0;i<5;i++){
-        qs+='&w'+i+'='+document.getElementById('w'+i).value;
-        qs+='&a'+i+'='+document.getElementById('a'+i).value;
+        qs+='w'+i+'='+document.getElementById('w'+i).value+'&';
+        qs+='a'+i+'='+document.getElementById('a'+i).value+'&';
       }
-      qs+='&panelCal='+document.getElementById('panelCal').value;
-      admFetch('/admin/setcal'+qs)
+      qs+='panelCal='+document.getElementById('panelCal').value;
+      admFetch('/admin/setcal', qs)
         .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
         .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Kalibrasi disimpan ke ESP32!'; })
         .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan kalibrasi!'; });
