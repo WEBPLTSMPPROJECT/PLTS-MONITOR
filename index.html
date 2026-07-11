@@ -297,7 +297,7 @@
       <div>
         <strong>Timer</strong>: Output AC &amp; Lampu Utama ON otomatis selama jam aktif &nbsp;|&nbsp;
         <strong>PZEM</strong>: Inverter, Lampu Utama &amp; Lampu Panel ON otomatis saat PLN tidak ada &nbsp;|&nbsp;
-        <strong>Manual</strong>: Semua relay bisa ditoggle, tapi R1/R2/R4 otomatis kembali ke PZEM &plusmn;1 detik (Output AC bertahan sampai ditekan AUTO)
+        <strong>Manual</strong>: Semua relay bisa ditoggle. R1 (Inverter), R2 (Lampu Utama) &amp; R3 (Output AC) bertahan MANUAL sampai ditekan tombol AUTO &nbsp;|&nbsp; R4 (Lampu Panel) otomatis kembali ke PZEM &plusmn;1 detik
       </div>
     </div>
 
@@ -402,13 +402,13 @@
         <div class="rh">
           <div>
             <div class="rname">INVERTER</div>
-            <div class="rsub">[MANUAL SESAAT + PZEM]</div>
+            <div class="rsub">[MANUAL + PZEM]</div>
           </div>
           <div class="rbdg boff" id="r1">MATI</div>
         </div>
         <div class="trow">
           <label class="tw">
-            <input type="checkbox" id="t1" onchange="setR(1,this.checked?1:0)">
+            <input type="checkbox" id="t1" onclick="return onToggleClick(event,1)">
             <span class="ts"></span>
           </label>
         </div>
@@ -416,21 +416,19 @@
         <div style="display:flex;align-items:center;justify-content:center">
           <span class="modebdg auto" id="m1">AUTO</span>
         </div>
-        <div style="font-size:9px;color:var(--mut);text-align:center;letter-spacing:0.5px">
-          PZEM selalu berlaku &mdash; manual otomatis kembali &plusmn;1 detik
-        </div>
+        <button class="autobtn" id="ab1" onclick="setAuto(1)">&#8635; KEMBALI KE AUTO</button>
       </div>
       <div class="rc roff" id="cr2">
         <div class="rh">
           <div>
             <div class="rname">LAMPU UTAMA</div>
-            <div class="rsub">[MANUAL SESAAT | TIMER + PZEM]</div>
+            <div class="rsub">[MANUAL | TIMER + PZEM]</div>
           </div>
           <div class="rbdg boff" id="r2">MATI</div>
         </div>
         <div class="trow">
           <label class="tw">
-            <input type="checkbox" id="t2" onchange="setR(2,this.checked?1:0)">
+            <input type="checkbox" id="t2" onclick="return onToggleClick(event,2)">
             <span class="ts"></span>
           </label>
         </div>
@@ -438,9 +436,7 @@
         <div style="display:flex;align-items:center;justify-content:center">
           <span class="modebdg auto" id="m2">AUTO</span>
         </div>
-        <div style="font-size:9px;color:var(--mut);text-align:center;letter-spacing:0.5px">
-          Timer/PZEM selalu berlaku &mdash; manual otomatis kembali &plusmn;1 detik
-        </div>
+        <button class="autobtn" id="ab2" onclick="setAuto(2)">&#8635; KEMBALI KE AUTO</button>
       </div>
       <div class="rc roff" id="cr3">
         <div class="rh">
@@ -452,7 +448,7 @@
         </div>
         <div class="trow">
           <label class="tw">
-            <input type="checkbox" id="t3" onchange="setR(3,this.checked?1:0)">
+            <input type="checkbox" id="t3" onclick="return onToggleClick(event,3)">
             <span class="ts"></span>
           </label>
         </div>
@@ -472,7 +468,7 @@
         </div>
         <div class="trow">
           <label class="tw">
-            <input type="checkbox" id="t4" onchange="setR(4,this.checked?1:0)">
+            <input type="checkbox" id="t4" onclick="return onToggleClick(event,4)">
             <span class="ts"></span>
           </label>
         </div>
@@ -837,6 +833,26 @@
     // Timestamp "kunci" per relay: selama masih di bawah waktu ini,
     // updData() tidak boleh menimpa tampilan relay tsb (anti kedip/bolak-balik)
     var relayLock = {1:0, 2:0, 3:0, 4:0};
+
+    // Dipanggil PERTAMA KALI saat toggle diklik, SEBELUM browser mengubah
+    // tampilan checkbox. Kalau belum login, batalkan aksi toggle di sini
+    // (preventDefault) supaya toggle TIDAK PERNAH kelihatan bergerak sama
+    // sekali sebelum login diminta — tidak ada lagi kedipan "kepencet dulu
+    // baru diminta login".
+    function onToggleClick(ev, n){
+      if(!adminToken){
+        ev.preventDefault();
+        toast('Login admin dulu untuk kontrol ini!','er');
+        openLoginModal();
+        return false;
+      }
+      // Sudah login: biarkan checkbox berubah normal (default browser),
+      // baru kirim state barunya ke setR() setelah checkbox benar-benar toggle.
+      setTimeout(function(){
+        setR(n, document.getElementById('t'+n).checked ? 1 : 0);
+      }, 0);
+      return true;
+    }
 
     function setR(n, s){
       if(!requireAuth()){
