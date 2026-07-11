@@ -185,6 +185,16 @@
     .tw input:checked + .ts { background: rgba(0,230,118,0.2); border-color: rgba(0,230,118,0.5); }
     .tw input:checked + .ts::before { transform: translateX(31px); background: var(--green); box-shadow: 0 0 12px rgba(0,230,118,0.7); }
     .pzlbl { font-size: 10px; letter-spacing: 0.5px; color: var(--orange); text-align: center; margin-top: -6px; }
+    .modebdg { font-size: 9px; letter-spacing: 1px; padding: 2px 9px; border-radius: 10px; font-weight: 700; }
+    .modebdg.auto   { background: rgba(0,229,204,0.12); color: var(--teal); border: 1px solid rgba(0,229,204,0.3); }
+    .modebdg.manual { background: rgba(255,179,0,0.12); color: var(--sun); border: 1px solid rgba(255,179,0,0.35); }
+    .autobtn { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;
+      padding: 7px 10px; border-radius: 9px; font-size: 10px; letter-spacing: 1px; font-weight: 700;
+      background: rgba(0,229,204,0.1); color: var(--teal); border: 1px solid rgba(0,229,204,0.35);
+      cursor: pointer; transition: all 0.25s; }
+    .autobtn:hover:not(:disabled) { background: rgba(0,229,204,0.2); box-shadow: 0 0 10px rgba(0,229,204,0.25); }
+    .autobtn:active:not(:disabled) { transform: scale(0.97); }
+    .autobtn:disabled { opacity: 0.35; cursor: default; }
     footer { margin-top: 52px; padding: 26px 0; border-top: 1px solid var(--bdr); text-align: center; }
     .flogo { font-family: 'Orbitron', monospace; font-size: 12px; letter-spacing: 3px; color: var(--mut); margin-bottom: 6px; }
     .fsince { font-size: 11px; letter-spacing: 2px; color: rgba(120,144,156,0.6); }
@@ -196,15 +206,58 @@
       .tarr { display: none; }
       .tf input[type=time] { font-size: 18px; width: 128px; }
     }
+    /* ===== ADMIN PANEL ===== */
+    .adm-wrap { max-width: 700px; margin: 20px auto; background: var(--bg2); border: 1px solid var(--bdr);
+      border-radius: 16px; padding: 24px 20px; }
+    .adm-title { font-family:'Orbitron',monospace; font-size:13px; letter-spacing:2px; color:var(--teal);
+      text-align:center; margin-bottom:18px; }
+    .adm-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px; justify-content:center; }
+    .adm-tab { background:rgba(0,229,204,0.06); border:1px solid var(--bdr); border-radius:10px;
+      color:var(--mut); font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1px;
+      padding:7px 12px; cursor:pointer; transition:all 0.2s; }
+    .adm-tab.active,.adm-tab:hover { background:rgba(0,229,204,0.14); border-color:rgba(0,229,204,0.4); color:var(--teal); }
+    .adm-pane { animation: fi 0.25s; }
+    @keyframes fi { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+    .adm-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:14px; }
+    .adm-card { background:rgba(0,0,0,0.25); border:1px solid var(--bdr); border-radius:10px; padding:12px; text-align:center; }
+    .adm-lbl { font-size:9px; color:var(--mut); letter-spacing:1px; margin-bottom:5px; }
+    .adm-val { font-family:'Orbitron',monospace; font-size:12px; color:var(--teal); }
+    .adm-btn { background:rgba(0,229,204,0.1); border:1px solid rgba(0,229,204,0.3); border-radius:10px;
+      color:var(--teal); font-family:'Orbitron',monospace; font-size:10px; letter-spacing:1px;
+      padding:9px 18px; cursor:pointer; transition:all 0.2s; }
+    .adm-btn:hover { background:rgba(0,229,204,0.2); }
+    .adm-btn-save { background:rgba(0,230,118,0.1); border-color:rgba(0,230,118,0.3); color:var(--green); }
+    .adm-btn-save:hover { background:rgba(0,230,118,0.2); }
+    .adm-form { display:flex; flex-direction:column; gap:10px; max-width:340px; }
+    .adm-form input { background:rgba(0,0,0,0.3); border:1px solid rgba(0,229,204,0.2); border-radius:10px;
+      color:var(--txt); font-size:13px; padding:10px 13px; outline:none; transition:border-color 0.3s; }
+    .adm-form input:focus { border-color:rgba(0,229,204,0.5); }
+    .adm-sub { font-size:10px; letter-spacing:1.5px; color:var(--teal); margin-bottom:10px; }
+    .cal-table { width:100%; border-collapse:collapse; margin-bottom:6px; }
+    .cal-table th { font-size:9px; color:var(--mut); letter-spacing:1px; padding:6px 8px; text-align:left;
+      border-bottom:1px solid var(--bdr); }
+    .cal-table td { padding:5px 6px; }
+    .cal-in { background:rgba(0,0,0,0.3); border:1px solid rgba(0,229,204,0.2); border-radius:8px;
+      color:var(--txt); font-size:12px; padding:7px 10px; outline:none; width:100%; transition:border-color 0.2s; }
+    .cal-in:focus { border-color:rgba(0,229,204,0.5); }
+    .adm-msg { font-size:11px; margin-top:10px; min-height:14px; }
+    .adm-msg.ok { color:var(--green); } .adm-msg.er { color:var(--red); }
+    .cp-lockbox { max-width: 300px; margin: 6px auto 4px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+    .cp-lockicon { font-size: 30px; opacity: 0.85; }
+    .cp-locktxt { font-size: 11px; color: var(--mut); line-height: 1.5; }
+    .cp-lockbox input[type=password] { width: 100%; background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(0,229,204,0.25); border-radius: 10px; color: var(--txt);
+      font-size: 14px; padding: 11px 14px; outline: none; transition: border-color 0.3s; text-align: center; }
+    .cp-lockbox input[type=password]:focus { border-color: rgba(0,229,204,0.6); }
+    .cp-lockbox .adm-btn { width: 100%; }
+    .log-row { display:flex; gap:10px; align-items:center; padding:8px 10px; border-radius:8px;
+      background:rgba(0,0,0,0.2); margin-bottom:5px; font-size:11px; flex-wrap:wrap; }
+    .log-ip { color:var(--teal); font-family:'Orbitron',monospace; font-size:10px; min-width:110px; }
+    .log-time { color:var(--mut); flex:1; }
+    .log-ok { padding:2px 8px; border-radius:6px; font-size:9px; letter-spacing:1px; }
+    .log-ok.y { background:rgba(0,230,118,0.15); color:var(--green); }
+    .log-ok.n { background:rgba(255,23,68,0.12); color:var(--red); }
   </style>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR85F1L6LX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-ZR85F1L6LX');
-  </script>
 </head>
 <body>
   <div class="bgl"></div>
@@ -242,9 +295,9 @@
     <div class="banner">
       <div style="font-size:20px;flex-shrink:0">&#9889;</div>
       <div>
-        <strong>Timer</strong>: Lampu Utama &amp; Output AC ON | Inverter ON jika PLN tidak ada &nbsp;|&nbsp;
-        <strong>PZEM</strong>: PLN 0V &rarr; Inverter &amp; Lampu Panel ON &nbsp;|&nbsp;
-        <strong>Manual</strong>: Semua relay bisa dikontrol langsung
+        <strong>Timer</strong>: Output AC &amp; Lampu Utama ON otomatis selama jam aktif &nbsp;|&nbsp;
+        <strong>PZEM</strong>: Inverter, Lampu Utama &amp; Lampu Panel ON otomatis saat PLN tidak ada &nbsp;|&nbsp;
+        <strong>Manual</strong>: Semua relay (1-4) bisa dikontrol langsung
       </div>
     </div>
 
@@ -253,13 +306,13 @@
       <div id="acBTxt"><strong>Menunggu data PZEM...</strong></div>
     </div>
 
-    <div class="slbl">&#9670; Pengaturan Timer Auto &mdash; Inverter, Lampu Utama &amp; Output AC</div>
+    <div class="slbl">&#9670; Pengaturan Timer Auto &mdash; Output AC &amp; Lampu Utama</div>
     <div class="tcard">
       <div class="thead">
         <div class="thl">
           <div class="tico">&#9200;</div>
           <div class="tlbl">JADWAL OTOMATIS
-            <small>Inverter, Lampu Utama &amp; Output AC ON/OFF sesuai waktu ini</small>
+            <small>Output AC &amp; Lampu Utama ON/OFF sesuai waktu ini</small>
           </div>
         </div>
         <div class="tbdg" id="tbdg">AKTIF</div>
@@ -270,7 +323,7 @@
         <span class="tv" id="tad">18:00</span>
         <span style="color:var(--mut);font-size:11px">sampai</span>
         <span class="tv" id="tae">21:00</span>
-        <span style="color:var(--mut);font-size:10px">(Inverter + Lampu Utama + Output AC ON)</span>
+        <span style="color:var(--mut);font-size:10px">(Output AC + Lampu Utama ON)</span>
       </div>
       <div class="tinp">
         <div class="tf">
@@ -349,7 +402,7 @@
         <div class="rh">
           <div>
             <div class="rname">INVERTER</div>
-            <div class="rsub">[MANUAL | Timer(PLN tdk ada) | PZEM 0V]</div>
+            <div class="rsub">[MANUAL + PZEM]</div>
           </div>
           <div class="rbdg boff" id="r1">MATI</div>
         </div>
@@ -359,13 +412,17 @@
             <span class="ts"></span>
           </label>
         </div>
-        <div class="pzlbl">&#9728; Timer ON &amp; PLN&lt;50V &rarr; ON &nbsp;|&nbsp; &#9889; PZEM 0V &rarr; ON</div>
+        <div class="pzlbl">&#9889; PZEM: PLN tidak ada &rarr; ON &nbsp;|&nbsp; PLN ada &rarr; OFF</div>
+        <div style="display:flex;align-items:center;justify-content:center">
+          <span class="modebdg auto" id="m1">AUTO</span>
+        </div>
+        <button class="autobtn" id="ab1" onclick="setAuto(1)">&#8635; KEMBALI KE AUTO</button>
       </div>
       <div class="rc roff" id="cr2">
         <div class="rh">
           <div>
             <div class="rname">LAMPU UTAMA</div>
-            <div class="rsub">[AUTO + PZEM]</div>
+            <div class="rsub">[MANUAL | TIMER + PZEM]</div>
           </div>
           <div class="rbdg boff" id="r2">MATI</div>
         </div>
@@ -375,13 +432,17 @@
             <span class="ts"></span>
           </label>
         </div>
-        <div class="pzlbl">&#9728; Auto timer &nbsp;|&nbsp; &#9889; PZEM override saat AC drop</div>
+        <div class="pzlbl">&#9728; Timer aktif &rarr; ON &nbsp;|&nbsp; &#9889; PLN tidak ada &rarr; ON</div>
+        <div style="display:flex;align-items:center;justify-content:center">
+          <span class="modebdg auto" id="m2">AUTO</span>
+        </div>
+        <button class="autobtn" id="ab2" onclick="setAuto(2)">&#8635; KEMBALI KE AUTO</button>
       </div>
       <div class="rc roff" id="cr3">
         <div class="rh">
           <div>
             <div class="rname">OUTPUT AC</div>
-            <div class="rsub">[AUTO + PZEM]</div>
+            <div class="rsub">[MANUAL + AUTO TIMER]</div>
           </div>
           <div class="rbdg boff" id="r3">MATI</div>
         </div>
@@ -391,7 +452,11 @@
             <span class="ts"></span>
           </label>
         </div>
-        <div class="pzlbl">&#9728; Auto timer &nbsp;|&nbsp; &#9889; PZEM override saat AC drop</div>
+        <div class="pzlbl">&#9728; ON selama jam timer aktif</div>
+        <div style="display:flex;align-items:center;justify-content:center">
+          <span class="modebdg auto" id="m3">AUTO</span>
+        </div>
+        <button class="autobtn" id="ab3" onclick="setAuto(3)">&#8635; KEMBALI KE AUTO</button>
       </div>
       <div class="rc roff" id="cr4">
         <div class="rh">
@@ -408,6 +473,85 @@
           </label>
         </div>
         <div class="pzlbl">&#9889; PLN 0V &rarr; ON &nbsp;|&nbsp; PLN &ge;50V &rarr; OFF</div>
+        <div style="display:flex;align-items:center;justify-content:center">
+          <span class="modebdg auto" id="m4">AUTO</span>
+        </div>
+        <button class="autobtn" id="ab4" onclick="setAuto(4)">&#8635; KEMBALI KE AUTO</button>
+      </div>
+    </div>
+
+    <!-- ===== ADMIN PANEL (Control Panel) — punya password sendiri, terpisah dari login relay/timer ===== -->
+    <div id="adminPanel">
+      <div class="adm-wrap">
+        <div class="adm-title">&#9881; CONTROL PANEL ADMIN</div>
+
+        <!-- TAMPILAN TERKUNCI -->
+        <div id="cpLocked">
+          <div class="cp-lockbox">
+            <div class="cp-lockicon">&#128274;</div>
+            <div class="cp-locktxt">Panel ini terkunci. Masukkan password admin untuk membuka Control Panel.</div>
+            <input type="password" id="cpPass" placeholder="Password Control Panel" autocomplete="off">
+            <button class="adm-btn adm-btn-save" id="cpLoginBtn" onclick="cpLogin()">&#128274; BUKA CONTROL PANEL</button>
+            <div class="adm-msg er" id="cpLoginErr"></div>
+          </div>
+        </div>
+
+        <!-- TAMPILAN TERBUKA -->
+        <div id="cpUnlocked" style="display:none">
+        <div class="adm-tabs">
+          <button class="adm-tab active" onclick="admTab(this,'admStatus')">&#128268; STATUS</button>
+          <button class="adm-tab" onclick="admTab(this,'admPass')">&#128274; PASSWORD</button>
+          <button class="adm-tab" onclick="admTab(this,'admCal')">&#128200; KALIBRASI</button>
+          <button class="adm-tab" onclick="admTab(this,'admLog')">&#128196; LOG AKSES</button>
+        </div>
+        <div class="adm-pane" id="admStatus">
+          <div class="adm-grid">
+            <div class="adm-card"><div class="adm-lbl">UPTIME</div><div class="adm-val" id="aUptime">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">FREE HEAP</div><div class="adm-val" id="aHeap">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">WiFi RSSI</div><div class="adm-val" id="aRssi">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">IP LOKAL</div><div class="adm-val" id="aIp">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">IP AP</div><div class="adm-val" id="aApIp">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">PASSWORD</div><div class="adm-val" id="aCurPass">--</div></div>
+          </div>
+          <button class="adm-btn" onclick="loadAdmStatus()">&#8635; REFRESH</button>
+        </div>
+        <div class="adm-pane" id="admPass" style="display:none">
+          <div class="adm-form">
+            <label class="adm-lbl">Password Baru</label>
+            <input type="password" id="newPass1" placeholder="Password baru (min 4 karakter)">
+            <label class="adm-lbl">Konfirmasi</label>
+            <input type="password" id="newPass2" placeholder="Ulangi password baru">
+            <button class="adm-btn" onclick="doSetPassword()">&#10003; SIMPAN PASSWORD</button>
+            <div class="adm-msg" id="passMsg"></div>
+          </div>
+        </div>
+        <div class="adm-pane" id="admCal" style="display:none">
+          <div class="adm-sub">Baterai — 5 Titik Lookup Table</div>
+          <table class="cal-table">
+            <tr><th>#</th><th>Volt Sensor (web)</th><th>Volt Asli (avo)</th></tr>
+            <tr><td>1</td><td><input class="cal-in" id="w0" type="number" step="0.001"></td><td><input class="cal-in" id="a0" type="number" step="0.001"></td></tr>
+            <tr><td>2</td><td><input class="cal-in" id="w1" type="number" step="0.001"></td><td><input class="cal-in" id="a1" type="number" step="0.001"></td></tr>
+            <tr><td>3</td><td><input class="cal-in" id="w2" type="number" step="0.001"></td><td><input class="cal-in" id="a2" type="number" step="0.001"></td></tr>
+            <tr><td>4</td><td><input class="cal-in" id="w3" type="number" step="0.001"></td><td><input class="cal-in" id="a3" type="number" step="0.001"></td></tr>
+            <tr><td>5</td><td><input class="cal-in" id="w4" type="number" step="0.001"></td><td><input class="cal-in" id="a4" type="number" step="0.001"></td></tr>
+          </table>
+          <div class="adm-sub" style="margin-top:14px">Panel Surya</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <label class="adm-lbl" style="margin:0">Faktor Kalibrasi:</label>
+            <input class="cal-in" id="panelCal" type="number" step="0.0001" style="width:110px">
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="adm-btn" onclick="loadAdmCal()">&#8635; LOAD DARI ESP32</button>
+            <button class="adm-btn adm-btn-save" onclick="doSetCal()">&#10003; SIMPAN</button>
+          </div>
+          <div class="adm-msg" id="calMsg"></div>
+        </div>
+        <div class="adm-pane" id="admLog" style="display:none">
+          <button class="adm-btn" onclick="loadAdmLogs()" style="margin-bottom:12px">&#8635; REFRESH LOG</button>
+          <div id="logTable"><div class="adm-lbl" style="text-align:center">Tekan REFRESH LOG untuk memuat</div></div>
+        </div>
+        <button class="adm-btn" style="margin-top:16px;width:100%" onclick="cpLogout()">&#128275; KUNCI CONTROL PANEL</button>
+        </div>
       </div>
     </div>
 
@@ -428,14 +572,57 @@
 
     function updAdminBtn(){
       var b = document.getElementById('adminBtn');
+      var locked = document.getElementById('cpLocked');
+      var unlocked = document.getElementById('cpUnlocked');
       if(adminToken){
-        b.classList.add('logged');
-        b.innerHTML = '&#128275; LOGOUT';
+        b.classList.add('logged'); b.innerHTML='&#128275; LOGOUT';
+        if(locked) locked.style.display = 'none';
+        if(unlocked){ unlocked.style.display = 'block'; loadAdmStatus(); }
       } else {
-        b.classList.remove('logged');
-        b.innerHTML = '&#128274; LOGIN';
+        b.classList.remove('logged'); b.innerHTML='&#128274; LOGIN';
+        if(locked) locked.style.display = 'block';
+        if(unlocked) unlocked.style.display = 'none';
       }
     }
+
+    // Control Panel di bawah punya kotak password sendiri (terpisah dari
+    // tombol LOGIN di header), tapi keduanya memakai token admin yang sama
+    // di ESP32 — jadi login lewat salah satu otomatis membuka yang lain juga.
+    function cpLogin(){
+      if(!BASE){ document.getElementById('cpLoginErr').innerText = 'BASE URL belum siap, coba lagi.'; return; }
+      var pass = document.getElementById('cpPass').value;
+      if(!pass){ document.getElementById('cpLoginErr').innerText = 'Password tidak boleh kosong.'; return; }
+      document.getElementById('cpLoginErr').innerText = '';
+      fetch(BASE+'/login?password='+encodeURIComponent(pass))
+        .then(function(r){
+          if(!r.ok){ throw new Error('bad'); }
+          return r.text();
+        })
+        .then(function(tok){
+          tok = tok.trim();
+          if(!tok){ throw new Error('empty'); }
+          adminToken = tok;
+          localStorage.setItem('adminToken', adminToken);
+          document.getElementById('cpPass').value = '';
+          updAdminBtn();
+          toast('&#10003; Control panel terbuka','ok');
+        })
+        .catch(function(){
+          document.getElementById('cpLoginErr').innerText = 'Password salah atau gagal konek ESP32.';
+        });
+    }
+
+    function cpLogout(){
+      if(!confirm('Kunci Control Panel & logout admin?')) return;
+      adminToken = null;
+      localStorage.removeItem('adminToken');
+      updAdminBtn();
+      toast('Logout berhasil','');
+    }
+
+    document.getElementById('cpPass').addEventListener('keydown', function(e){
+      if(e.key === 'Enter') cpLogin();
+    });
 
     function onAdminBtnClick(){
       if(adminToken){
@@ -571,7 +758,7 @@
 
     function updData(){
       if(!BASE) { console.warn('BASE belum siap, skip fetch data'); return; }
-      fetch(BASE+'/data').then(function(r){return r.json();}).then(function(d){
+      fetch(BASE+'/data?_='+Date.now(), {cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
         document.getElementById('v').innerText   = d.v.toFixed(2);
         document.getElementById('vp').innerText  = d.vp.toFixed(2);
         document.getElementById('ic').innerText  = d.i.toFixed(3);
@@ -595,21 +782,37 @@
         var bt2= document.getElementById('acBTxt');
         if(d.acV < 50){
           bn.className='acb warn';
-          bt2.innerHTML='&#9889; <strong>PLN tidak ada / lemah: '+d.acV.toFixed(1)+'V (&lt;50V)</strong> &rarr; Inverter &amp; Lampu Panel ON otomatis';
+          bt2.innerHTML='&#9889; <strong>PLN tidak ada / lemah: '+d.acV.toFixed(1)+'V (&lt;50V)</strong> &rarr; Inverter, Lampu Utama &amp; Lampu Panel ON otomatis';
         } else {
           bn.className='acb ok';
-          bt2.innerHTML='&#9889; <strong>PLN ada: '+d.acV.toFixed(1)+'V (&ge;50V)</strong> &mdash; Inverter &amp; Lampu Panel OFF | Timer kontrol R2 &amp; R3';
+          bt2.innerHTML='&#9889; <strong>PLN ada: '+d.acV.toFixed(1)+'V (&ge;50V)</strong> &mdash; Inverter &amp; Lampu Panel OFF | Lampu Utama &amp; Output AC ikut Timer';
         }
 
         [1,2,3,4].forEach(function(n){
+          // Kalau relay ini baru saja ditoggle manual, jangan timpa tampilannya dulu
+          // selama masa "lock" — supaya tombol tidak bolak-balik akibat data basi.
+          if(relayLock[n] && Date.now() < relayLock[n]) return;
           var on = d['r'+n] === 1;
           document.getElementById('r'+n).innerText   = on ? 'NYALA' : 'MATI';
           document.getElementById('r'+n).className   = 'rbdg ' + (on?'bon':'boff');
           document.getElementById('cr'+n).className  = 'rc ' + (on?'ron':'roff');
           document.getElementById('t'+n).checked     = on;
+
+          var isManual = d['m'+n] === 1;
+          var mb = document.getElementById('m'+n);
+          if(mb){
+            mb.innerText = isManual ? 'MANUAL' : 'AUTO';
+            mb.className = 'modebdg ' + (isManual ? 'manual' : 'auto');
+          }
+          var ab = document.getElementById('ab'+n);
+          if(ab){ ab.disabled = !isManual; }
         });
       }).catch(function(e){ console.warn('Data error:',e); });
     }
+
+    // Timestamp "kunci" per relay: selama masih di bawah waktu ini,
+    // updData() tidak boleh menimpa tampilan relay tsb (anti kedip/bolak-balik)
+    var relayLock = {1:0, 2:0, 3:0, 4:0};
 
     function setR(n, s){
       if(!requireAuth()){
@@ -617,18 +820,53 @@
         document.getElementById('t'+n).checked = !s;
         return;
       }
-      fetch(BASE+'/relay?r='+n+'&s='+s+'&token='+encodeURIComponent(adminToken))
+
+      // Update tampilan LANGSUNG (optimistic) begitu ditekan, tidak nunggu server
+      var on = (s === 1 || s === true);
+      document.getElementById('r'+n).innerText  = on ? 'NYALA' : 'MATI';
+      document.getElementById('r'+n).className  = 'rbdg ' + (on?'bon':'boff');
+      document.getElementById('cr'+n).className = 'rc ' + (on?'ron':'roff');
+      document.getElementById('t'+n).checked    = on;
+
+      // Kunci tampilan relay ini selama 3 detik supaya polling 2 detik
+      // berikutnya tidak menimpa balik dengan data yang mungkin masih basi
+      relayLock[n] = Date.now() + 3000;
+
+      fetch(BASE+'/relay?r='+n+'&s='+s+'&token='+encodeURIComponent(adminToken)+'&_='+Date.now(), {cache:'no-store'})
         .then(function(r){
-          if(r.ok) { updData(); }
+          if(r.ok) {
+            // konfirmasi ulang setelah lock lepas, biar sinkron pasti dengan ESP32
+            setTimeout(updData, 3100);
+          }
           else if(r.status===401){
             toast('Sesi admin tidak valid, login ulang!','er');
             adminToken=null; localStorage.removeItem('adminToken'); updAdminBtn();
+            relayLock[n] = 0;
             document.getElementById('t'+n).checked = !s;
           } else {
+            relayLock[n] = 0;
             document.getElementById('t'+n).checked = !s;
           }
         })
-        .catch(function(e){ console.warn('Relay error:',e); document.getElementById('t'+n).checked = !s; });
+        .catch(function(e){
+          console.warn('Relay error:',e);
+          relayLock[n] = 0;
+          document.getElementById('t'+n).checked = !s;
+        });
+    }
+
+    function setAuto(n){
+      if(!requireAuth()) return;
+      relayLock[n] = 0;
+      fetch(BASE+'/relay?r='+n+'&s=auto&token='+encodeURIComponent(adminToken)+'&_='+Date.now(), {cache:'no-store'})
+        .then(function(r){
+          if(r.ok) { toast('Relay '+n+' dikembalikan ke mode AUTO',''); updData(); }
+          else if(r.status===401){
+            toast('Sesi admin tidak valid, login ulang!','er');
+            adminToken=null; localStorage.removeItem('adminToken'); updAdminBtn();
+          } else { toast('Gagal mengubah ke AUTO!','er'); }
+        })
+        .catch(function(e){ console.warn('Auto error:',e); toast('Gagal konek ESP32!','er'); });
     }
 
     function updClk(){
@@ -641,7 +879,6 @@
       updData();
       refreshBase();
     } else {
-      // BASE belum ada (kunjungan pertama) → harus tunggu ambil dari GitHub dulu
       refreshBase().then(function(){ updData(); });
     }
     updAdminBtn();
@@ -649,6 +886,92 @@
     setInterval(updData, 2000);
     setInterval(updClk,  1000);
     setInterval(refreshBase, 20000);
+
+    // ===== ADMIN PANEL JS =====
+    function admFetch(path){
+      return fetch(BASE+path+'?token='+encodeURIComponent(adminToken))
+        .then(function(r){
+          if(r.status===401){ adminToken=null; localStorage.removeItem('adminToken'); updAdminBtn(); toast('Sesi expired, login ulang','er'); throw new Error('401'); }
+          return r;
+        });
+    }
+
+    function admTab(el, paneId){
+      document.querySelectorAll('.adm-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.adm-pane').forEach(function(p){ p.style.display='none'; });
+      el.classList.add('active');
+      document.getElementById(paneId).style.display='block';
+      if(paneId==='admCal') loadAdmCal();
+      if(paneId==='admLog') loadAdmLogs();
+    }
+
+    function loadAdmStatus(){
+      if(!BASE) return;
+      admFetch('/admin/status').then(function(r){ return r.json(); }).then(function(d){
+        document.getElementById('aUptime').innerText  = d.uptime;
+        document.getElementById('aHeap').innerText    = (d.freeHeap/1024).toFixed(1)+' KB';
+        document.getElementById('aRssi').innerText    = d.rssi+' dBm';
+        document.getElementById('aIp').innerText      = d.ip;
+        document.getElementById('aApIp').innerText    = d.apIP;
+        document.getElementById('aCurPass').innerText = d.password;
+      }).catch(function(){});
+    }
+
+    function doSetPassword(){
+      var p1=document.getElementById('newPass1').value.trim();
+      var p2=document.getElementById('newPass2').value.trim();
+      var msg=document.getElementById('passMsg');
+      if(p1.length<4){ msg.className='adm-msg er'; msg.innerText='Password minimal 4 karakter!'; return; }
+      if(p1!==p2){ msg.className='adm-msg er'; msg.innerText='Password tidak cocok!'; return; }
+      admFetch('/admin/setpassword&newpass='+encodeURIComponent(p1))
+        .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Password diubah! Silakan login ulang.';
+          adminToken=null; localStorage.removeItem('adminToken');
+          setTimeout(function(){ updAdminBtn(); }, 1500); })
+        .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan password!'; });
+    }
+
+    function loadAdmCal(){
+      if(!BASE) return;
+      admFetch('/admin/getcal').then(function(r){ return r.json(); }).then(function(d){
+        for(var i=0;i<5;i++){
+          document.getElementById('w'+i).value = d.lut[i].w;
+          document.getElementById('a'+i).value = d.lut[i].a;
+        }
+        document.getElementById('panelCal').value = d.panelCal;
+      }).catch(function(){});
+    }
+
+    function doSetCal(){
+      var msg=document.getElementById('calMsg');
+      var qs='';
+      for(var i=0;i<5;i++){
+        qs+='&w'+i+'='+document.getElementById('w'+i).value;
+        qs+='&a'+i+'='+document.getElementById('a'+i).value;
+      }
+      qs+='&panelCal='+document.getElementById('panelCal').value;
+      admFetch('/admin/setcal'+qs)
+        .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Kalibrasi disimpan ke ESP32!'; })
+        .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan kalibrasi!'; });
+    }
+
+    function loadAdmLogs(){
+      if(!BASE) return;
+      admFetch('/admin/logs').then(function(r){ return r.json(); }).then(function(logs){
+        var tbl=document.getElementById('logTable');
+        if(!logs.length){ tbl.innerHTML='<div class="adm-lbl" style="text-align:center">Belum ada log</div>'; return; }
+        var h='';
+        logs.forEach(function(l){
+          h+='<div class="log-row">';
+          h+='<span class="log-ip">'+l.ip+'</span>';
+          h+='<span class="log-time">'+l.waktu+'</span>';
+          h+='<span class="log-ok '+(l.ok?'y':'n')+'">'+(l.ok?'BERHASIL':'GAGAL')+'</span>';
+          h+='</div>';
+        });
+        tbl.innerHTML=h;
+      }).catch(function(){});
+    }
   </script>
 </body>
 </html>
