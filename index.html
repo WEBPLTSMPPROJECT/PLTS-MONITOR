@@ -394,6 +394,10 @@
         <div class="mh"><div class="mi ig">&#10003;</div><div class="ml">Power Factor</div></div>
         <div class="mv"><span id="acpf">--</span></div>
       </div>
+      <div class="mc">
+        <div class="mh"><div class="mi io">&#9889;</div><div class="ml">Energi (Energy / kWh)</div></div>
+        <div class="mv"><span id="ace">--</span><span class="mu">kWh</span></div>
+      </div>
     </div>
 
     <div class="slbl">&#9670; Kontrol Relay</div>
@@ -791,6 +795,7 @@
         document.getElementById('acp').innerText = d.acP.toFixed(1);
         document.getElementById('acf').innerText = d.acF.toFixed(1);
         document.getElementById('acpf').innerText= d.acPF.toFixed(2);
+        document.getElementById('ace').innerText = d.acE.toFixed(3);
 
         if(!tPend){
           updTimer(d.tsh, d.tsm, d.teh, d.tem);
