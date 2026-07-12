@@ -397,6 +397,7 @@
       <div class="mc">
         <div class="mh"><div class="mi io">&#9889;</div><div class="ml">Energi (Energy / kWh)</div></div>
         <div class="mv"><span id="ace">--</span><span class="mu">kWh</span></div>
+        <div class="mu" style="margin-top:4px;">&#8776; <span id="acrp">--</span></div>
       </div>
     </div>
 
@@ -796,6 +797,7 @@
         document.getElementById('acf').innerText = d.acF.toFixed(1);
         document.getElementById('acpf').innerText= d.acPF.toFixed(2);
         document.getElementById('ace').innerText = d.acE.toFixed(3);
+        document.getElementById('acrp').innerText = 'Rp ' + Math.round(d.acRp).toLocaleString('id-ID');
 
         if(!tPend){
           updTimer(d.tsh, d.tsm, d.teh, d.tem);
