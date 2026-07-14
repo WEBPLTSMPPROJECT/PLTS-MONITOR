@@ -401,6 +401,12 @@
       </div>
     </div>
 
+    <div id="budgetBanner" style="display:none;background:rgba(255,77,77,0.15);border:1px solid rgba(255,77,77,0.5);border-radius:10px;padding:10px 14px;margin-bottom:14px;color:#ff4d4d;font-size:13px;text-align:center;font-weight:600;">
+      &#128683; LIMIT BIAYA TERCAPAI &mdash; Semua relay dikunci OFF. Naikkan limit di Control Panel untuk membuka kembali.
+    </div>
+    <div id="currentBanner" style="display:none;background:rgba(255,77,77,0.15);border:1px solid rgba(255,77,77,0.5);border-radius:10px;padding:10px 14px;margin-bottom:14px;color:#ff4d4d;font-size:13px;text-align:center;font-weight:600;">
+      &#9888; ARUS AC MELEBIHI BATAS &mdash; Semua relay TRIP OFF. Tekan RESET TRIP ARUS di Control Panel untuk menyalakan kembali.
+    </div>
     <div class="slbl">&#9670; Kontrol Relay</div>
     <div class="rgrid">
       <div class="rc roff" id="cr1">
@@ -509,6 +515,8 @@
           <button class="adm-tab active" onclick="admTab(this,'admStatus')">&#128268; STATUS</button>
           <button class="adm-tab" onclick="admTab(this,'admPass')">&#128274; PASSWORD</button>
           <button class="adm-tab" onclick="admTab(this,'admCal')">&#128200; KALIBRASI</button>
+          <button class="adm-tab" onclick="admTab(this,'admBudget')">&#128176; LIMIT BIAYA</button>
+          <button class="adm-tab" onclick="admTab(this,'admCurrent')">&#9889; MAX ARUS</button>
           <button class="adm-tab" onclick="admTab(this,'admLog')">&#128196; LOG AKSES</button>
         </div>
         <div class="adm-pane" id="admStatus">
@@ -564,6 +572,53 @@
           </div>
           <div class="adm-msg" id="calMsg"></div>
         </div>
+
+        <!-- LIMIT BIAYA (RUPIAH) -->
+        <div class="adm-pane" id="admBudget" style="display:none">
+          <div class="adm-sub">Limit Biaya Listrik (Rupiah)</div>
+          <div class="adm-grid" style="margin-bottom:14px">
+            <div class="adm-card"><div class="adm-lbl">BIAYA SAAT INI</div><div class="adm-val" id="bRpNow">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">STATUS</div><div class="adm-val" id="bStatus">--</div></div>
+          </div>
+          <div class="adm-form">
+            <label class="adm-lbl">Limit Rupiah (isi 0 untuk menonaktifkan limit)</label>
+            <input type="number" id="rpLimitInput" placeholder="Contoh: 50000" step="1" min="0">
+            <button class="adm-btn adm-btn-save" onclick="doSetBudget()">&#10003; SIMPAN LIMIT</button>
+            <div class="adm-msg" id="budgetMsg"></div>
+          </div>
+          <div class="adm-sub" style="margin-top:14px;font-size:12px;color:var(--mut);line-height:1.6">
+            Kalau biaya (Rupiah dari akumulasi kWh) sudah menyentuh atau melebihi limit ini,
+            <b>SEMUA relay (1-4) otomatis dikunci OFF</b> -- baik status manual maupun auto,
+            walau tombol AUTO ditekan tetap tidak akan menyala -- sampai limit ini dinaikkan
+            lagi di atas biaya saat ini, atau di-set ke 0 untuk menonaktifkan limit sepenuhnya.
+          </div>
+        </div>
+
+        <!-- MAX ARUS AC (PROTEKSI OVER-CURRENT / TRIP) -->
+        <div class="adm-pane" id="admCurrent" style="display:none">
+          <div class="adm-sub">Batas Maksimal Arus AC (Ampere)</div>
+          <div class="adm-grid" style="margin-bottom:14px">
+            <div class="adm-card"><div class="adm-lbl">ARUS SAAT INI</div><div class="adm-val" id="cAcNow">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">STATUS</div><div class="adm-val" id="cStatus">--</div></div>
+          </div>
+          <div class="adm-form">
+            <label class="adm-lbl">Batas Arus Maksimal (Ampere, isi 0 untuk menonaktifkan)</label>
+            <input type="number" id="maxCurrentInput" placeholder="Contoh: 4" step="0.1" min="0">
+            <button class="adm-btn adm-btn-save" onclick="doSetMaxCurrent()">&#10003; SIMPAN BATAS</button>
+            <div class="adm-msg" id="maxCurrentMsg"></div>
+          </div>
+          <button class="adm-btn" style="margin-top:14px;width:100%;background:rgba(255,77,77,0.15);border-color:rgba(255,77,77,0.5);color:#ff4d4d" onclick="doResetCurrentTrip()">&#8635; RESET TRIP ARUS</button>
+          <div class="adm-msg" id="resetCurrentMsg"></div>
+          <div class="adm-sub" style="margin-top:14px;font-size:12px;color:var(--mut);line-height:1.6">
+            Kalau arus AC sudah menyentuh atau melebihi batas ini, <b>SEMUA relay (1-4)
+            langsung TRIP OFF</b> -- baik status manual maupun auto, walau tombol AUTO
+            ditekan tetap tidak akan menyala. <b>Berbeda dengan Limit Biaya</b>: relay akan
+            <b>TETAP OFF</b> meskipun arus sudah turun kembali di bawah batas -- kamu harus
+            menekan tombol <b>RESET TRIP ARUS</b> di atas secara manual untuk menyalakan
+            relay kembali (mirip cara kerja MCB/circuit breaker).
+          </div>
+        </div>
+
         <div class="adm-pane" id="admLog" style="display:none">
           <button class="adm-btn" onclick="loadAdmLogs()" style="margin-bottom:12px">&#8635; REFRESH LOG</button>
           <div id="logTable"><div class="adm-lbl" style="text-align:center">Tekan REFRESH LOG untuk memuat</div></div>
@@ -798,6 +853,8 @@
         document.getElementById('acpf').innerText= d.acPF.toFixed(2);
         document.getElementById('ace').innerText = d.acE.toFixed(3);
         document.getElementById('acrp').innerText = 'Rp ' + Math.round(d.acRp).toLocaleString('id-ID');
+        document.getElementById('budgetBanner').style.display = d.budgetLocked ? 'block' : 'none';
+        document.getElementById('currentBanner').style.display = d.currentTripped ? 'block' : 'none';
 
         if(!tPend){
           updTimer(d.tsh, d.tsm, d.teh, d.tem);
@@ -952,6 +1009,8 @@
       el.classList.add('active');
       document.getElementById(paneId).style.display='block';
       if(paneId==='admCal') loadAdmCal();
+      if(paneId==='admBudget') loadAdmBudget();
+      if(paneId==='admCurrent') loadAdmCurrent();
       if(paneId==='admLog') loadAdmLogs();
     }
 
@@ -1021,6 +1080,56 @@
         .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
         .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Kalibrasi disimpan ke ESP32!'; })
         .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan kalibrasi!'; });
+    }
+
+    function loadAdmBudget(){
+      admFetch('/admin/getbudget').then(function(r){ return r.json(); }).then(function(d){
+        document.getElementById('rpLimitInput').value = d.rpLimit;
+        document.getElementById('bRpNow').innerText = 'Rp ' + Math.round(d.rpNow).toLocaleString('id-ID');
+        var st=document.getElementById('bStatus');
+        if(d.locked){ st.innerText='TERKUNCI'; st.style.color='#ff4d4d'; }
+        else if(d.rpLimit>0){ st.innerText='AKTIF'; st.style.color='#00e5cc'; }
+        else { st.innerText='NONAKTIF'; st.style.color='var(--mut)'; }
+      }).catch(function(){});
+    }
+
+    function doSetBudget(){
+      var v = document.getElementById('rpLimitInput').value;
+      var msg = document.getElementById('budgetMsg');
+      if(v===''){ msg.className='adm-msg er'; msg.innerText='Isi angka limit dulu (0 untuk nonaktif)!'; return; }
+      admFetch('/admin/setbudget', 'limit='+encodeURIComponent(v))
+        .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Limit biaya disimpan!'; loadAdmBudget(); })
+        .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan limit!'; });
+    }
+
+    function loadAdmCurrent(){
+      admFetch('/admin/getmaxcurrent').then(function(r){ return r.json(); }).then(function(d){
+        document.getElementById('maxCurrentInput').value = d.maxAcCurrent;
+        document.getElementById('cAcNow').innerText = d.acCurrentNow.toFixed(2)+' A';
+        var st=document.getElementById('cStatus');
+        if(d.tripped){ st.innerText='TRIP'; st.style.color='#ff4d4d'; }
+        else if(d.maxAcCurrent>0){ st.innerText='AKTIF'; st.style.color='#00e5cc'; }
+        else { st.innerText='NONAKTIF'; st.style.color='var(--mut)'; }
+      }).catch(function(){});
+    }
+
+    function doSetMaxCurrent(){
+      var v = document.getElementById('maxCurrentInput').value;
+      var msg = document.getElementById('maxCurrentMsg');
+      if(v===''){ msg.className='adm-msg er'; msg.innerText='Isi angka batas arus dulu (0 untuk nonaktif)!'; return; }
+      admFetch('/admin/setmaxcurrent', 'limit='+encodeURIComponent(v))
+        .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Batas arus disimpan!'; loadAdmCurrent(); })
+        .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal menyimpan batas arus!'; });
+    }
+
+    function doResetCurrentTrip(){
+      var msg = document.getElementById('resetCurrentMsg');
+      admFetch('/admin/resetcurrent')
+        .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+        .then(function(){ msg.className='adm-msg ok'; msg.innerText='&#10003; Trip arus direset, relay dibuka kembali!'; loadAdmCurrent(); })
+        .catch(function(){ msg.className='adm-msg er'; msg.innerText='Gagal reset trip!'; });
     }
 
     function loadAdmLogs(){
