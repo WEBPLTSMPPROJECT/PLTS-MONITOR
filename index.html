@@ -876,8 +876,10 @@
           // Kalau relay ini baru saja ditoggle manual, jangan timpa tampilannya dulu
           // selama masa "lock" — supaya tombol tidak bolak-balik akibat data basi.
           if(relayLock[n] && Date.now() < relayLock[n]) return;
-          var on = d['r'+n] === 1;
-          document.getElementById('r'+n).innerText   = on ? 'NYALA' : 'MATI';
+          var locked = (d.budgetLocked===1) || (d.currentTripped===1);
+          var stateOn = d['r'+n] === 1;      // status yang "diingat" (manual/auto)
+          var on = stateOn && !locked;       // status FISIK aktual (yang ditampilkan)
+          document.getElementById('r'+n).innerText   = on ? 'NYALA' : (locked && stateOn ? 'DIKUNCI' : 'MATI');
           document.getElementById('r'+n).className   = 'rbdg ' + (on?'bon':'boff');
           document.getElementById('cr'+n).className  = 'rc ' + (on?'ron':'roff');
           document.getElementById('t'+n).checked     = on;
