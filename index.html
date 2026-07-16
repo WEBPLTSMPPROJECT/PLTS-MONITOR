@@ -903,10 +903,18 @@
   </div>
 
   <script>
-    // ===== URL TUNNEL DIAMBIL OTOMATIS DARI GITHUB =====
+    // ===== URL TUNNEL DIAMBIL OTOMATIS DARI GITHUB (hanya dipakai kalau diakses dari LUAR, misal GitHub Pages) =====
     // GANTI bagian USERNAME_GITHUB_KAMU sesuai username GitHub kamu:
     var TUNNEL_URL_SOURCE = "https://raw.githubusercontent.com/WEBPLTSMPPROJECT/PLTS-MONITOR/main/tunnel-url.txt";
-    var BASE = localStorage.getItem('tunnelBase') || null;
+    // FIX LOGIN: kalau halaman ini dibuka LANGSUNG dari ESP32 (AP 192.168.4.1 atau
+    // IP lokal STA seperti 192.168.x.x / 10.x.x.x), TIDAK perlu tunnel/internet sama
+    // sekali -> pakai origin sendiri (fetch relatif, BASE = ''). Sebelumnya BASE selalu
+    // wajib diisi dari tunnel-url.txt (butuh internet), padahal saat konek ke AP ESP32
+    // biasanya HP/laptop TIDAK ada internet -> BASE gagal terisi -> tombol LOGIN &
+    // Control Panel selalu bilang "BASE URL belum siap" walau password sudah benar.
+    var IS_LOCAL_ESP = /^192\.168\.|^10\.|^172\.(1[6-9]|2[0-9]|3[0-1])\.|^localhost$/.test(location.hostname);
+    var BASE = IS_LOCAL_ESP ? '' : (localStorage.getItem('tunnelBase') || null);
+    var baseReady = IS_LOCAL_ESP ? true : !!BASE;
 
     // ===== SISTEM LOGIN ADMIN (tombol header, kontrol relay & timer) =====
     // Token ini TERPISAH dari cpToken (Control Panel) di bawah.
@@ -937,7 +945,7 @@
     }
 
     function cpLogin(){
-      if(!BASE){ document.getElementById('cpLoginErr').innerText = 'BASE URL belum siap, coba lagi.'; return; }
+      if(!baseReady){ document.getElementById('cpLoginErr').innerText = 'BASE URL belum siap, coba lagi.'; return; }
       var pass = document.getElementById('cpPass').value;
       if(!pass){ document.getElementById('cpLoginErr').innerText = 'Password tidak boleh kosong.'; return; }
       document.getElementById('cpLoginErr').innerText = '';
@@ -1000,7 +1008,7 @@
     }
 
     function doLogin(){
-      if(!BASE){ document.getElementById('loginErr').innerText = 'BASE URL belum siap, coba lagi.'; return; }
+      if(!baseReady){ document.getElementById('loginErr').innerText = 'BASE URL belum siap, coba lagi.'; return; }
       var pass = document.getElementById('adminPass').value;
       if(!pass){ document.getElementById('loginErr').innerText = 'Password tidak boleh kosong.'; return; }
       fetch(BASE+'/login?password='+encodeURIComponent(pass))
@@ -1039,12 +1047,14 @@
     }
 
     async function refreshBase(){
+      if (IS_LOCAL_ESP) return; // akses lokal ESP32 -> sudah pakai origin sendiri, tak perlu tunnel
       try{
         var r = await fetch(TUNNEL_URL_SOURCE + "?t=" + Date.now());
         var t = await r.text();
         var newBase = t.trim();
         if(newBase && newBase.indexOf("http") === 0 && newBase !== BASE){
           BASE = newBase;
+          baseReady = true;
           localStorage.setItem('tunnelBase', BASE);
           console.log("BASE diupdate ke:", BASE);
         }
@@ -1111,7 +1121,7 @@
     });
 
     function updData(){
-      if(!BASE) { console.warn('BASE belum siap, skip fetch data'); return; }
+      if(!baseReady) { console.warn('BASE belum siap, skip fetch data'); return; }
       fetch(BASE+'/data?_='+Date.now(), {cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
         document.getElementById('v').innerText   = d.v.toFixed(2);
         document.getElementById('vp').innerText  = d.vp.toFixed(2);
@@ -1254,10 +1264,10 @@
         new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     }
 
-    if (BASE) {
-      // BASE sudah ada di cache → tampilkan data langsung, refresh GitHub di belakang layar
+    if (baseReady) {
+      // Lokal ESP32 (langsung siap) ATAU BASE tunnel sudah ada di cache → tampilkan data langsung
       updData();
-      refreshBase();
+      if (!IS_LOCAL_ESP) refreshBase();
     } else {
       refreshBase().then(function(){ updData(); });
     }
@@ -1291,7 +1301,7 @@
     }
 
     function loadAdmStatus(){
-      if(!BASE) return;
+      if(!baseReady) return;
       admFetch('/admin/status').then(function(r){ return r.json(); }).then(function(d){
         document.getElementById('aUptime').innerText  = d.uptime;
         document.getElementById('aHeap').innerText    = (d.freeHeap/1024).toFixed(1)+' KB';
@@ -1334,7 +1344,7 @@
     }
 
     function loadAdmCal(){
-      if(!BASE) return;
+      if(!baseReady) return;
       admFetch('/admin/getcal').then(function(r){ return r.json(); }).then(function(d){
         for(var i=0;i<5;i++){
           document.getElementById('w'+i).value = d.lut[i].w;
@@ -1409,7 +1419,7 @@
     }
 
     function loadAdmLogs(){
-      if(!BASE) return;
+      if(!baseReady) return;
       admFetch('/admin/logs').then(function(r){ return r.json(); }).then(function(logs){
         var tbl=document.getElementById('logTable');
         if(!logs.length){ tbl.innerHTML='<div class="adm-lbl" style="text-align:center">Belum ada log</div>'; return; }
