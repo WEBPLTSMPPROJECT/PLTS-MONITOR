@@ -257,20 +257,26 @@
     .log-ok { padding:2px 8px; border-radius:6px; font-size:9px; letter-spacing:1px; }
     .log-ok.y { background:rgba(0,230,118,0.15); color:var(--green); }
     .log-ok.n { background:rgba(255,23,68,0.12); color:var(--red); }
-    /* ================= TAB LAYOUT (SIDEBAR) ================= */
-    .app-body { display: flex; align-items: flex-start; gap: 10px; margin-top: 22px; }
-    .side-tabs { position: sticky; top: 16px; flex: 0 0 108px; display: flex; flex-direction: column; gap: 5px; }
-    .side-tab { display: flex; align-items: center; gap: 6px; text-align: left; width: 100%;
-      background: var(--card); border: 1px solid var(--bdr); border-radius: 9px;
-      color: var(--mut); font-family: 'Orbitron', monospace; font-size: 8.5px; letter-spacing: 0.6px;
-      padding: 8px 7px; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
-    .side-tab .sti { font-size: 12px; flex-shrink: 0; width: 13px; text-align: center; }
-    .side-tab:hover { border-color: rgba(0,229,204,0.4); color: var(--teal); transform: translateX(2px); }
-    .side-tab.active { color: var(--teal); border-color: rgba(0,229,204,0.55);
-      background: linear-gradient(135deg, rgba(0,229,204,0.14), rgba(255,179,0,0.06)); }
-    .side-tab.active::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
-      background: linear-gradient(180deg, var(--teal), var(--sun)); }
-    .side-tab .stlock { margin-left: auto; font-size: 11px; opacity: 0.6; }
+    /* ================= TAB LAYOUT (PILL BAR DI BAWAH DASBOR) ================= */
+    .app-body { display: flex; flex-direction: column; gap: 18px; margin-top: 22px; }
+    .side-tabs { position: sticky; top: 10px; z-index: 40; display: flex; flex-direction: row;
+      align-items: center; gap: 4px; width: 100%;
+      background: rgba(6,20,38,0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--bdr); border-radius: 999px; padding: 6px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.02); }
+    .side-tab { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 7px;
+      flex: 1 1 0; text-align: center; background: transparent; border: 1px solid transparent;
+      border-radius: 999px; color: var(--mut); font-family: 'Orbitron', monospace; font-size: 9.5px;
+      letter-spacing: 0.6px; padding: 10px 10px; cursor: pointer; transition: all 0.25s;
+      position: relative; overflow: hidden; white-space: nowrap; }
+    .side-tab .sti { font-size: 14px; flex-shrink: 0; line-height: 1; }
+    .side-tab:hover { color: var(--teal); background: rgba(0,229,204,0.08); }
+    .side-tab.active { color: #04141f; border-color: transparent;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--sun) 100%);
+      box-shadow: 0 0 18px rgba(0,229,204,0.45), 0 0 10px rgba(255,179,0,0.3);
+      font-weight: 700; }
+    .side-tab .stlock { margin-left: 2px; font-size: 10px; opacity: 0.7; }
+    .side-tab.active .stlock { opacity: 0.85; }
     .side-tab .stlbl { white-space: nowrap; }
     .tab-content { flex: 1 1 auto; min-width: 0; }
     .tab-pane { display: none; animation: tabin 0.3s ease; }
@@ -278,28 +284,22 @@
     @keyframes tabin { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
     .tab-pane .slbl:first-of-type { margin-top: 4px; }
 
-    .pagehead { margin-bottom: 18px; }
-    .pagehead .ptitle { font-family:'Orbitron',monospace; font-size:15px; letter-spacing:2px; color:var(--teal);
-      display:flex; align-items:center; gap:10px; }
-    .pagehead .psub { font-size:11px; color:var(--mut); margin-top:5px; letter-spacing:0.5px; }
-
-    /* Sidebar TETAP di kiri & TETAP vertikal di semua ukuran layar — tidak pernah berubah
-       jadi baris horizontal yang digeser. Di layar sempit, lebar & teks diperkecil saja. */
+    /* Pill bar tetap horizontal & sticky di semua ukuran layar — di layar sempit
+       ikon & label tetap tampil (label ditaruh di bawah ikon) supaya tiap tab
+       tetap jelas keterangannya. */
     @media (max-width: 700px) {
-      .side-tabs { flex: 0 0 44px; gap: 4px; }
-      .side-tab { flex-direction: column; justify-content: center; align-items: center;
-        text-align: center; padding: 8px 1px; gap: 0; }
-      .side-tab .sti { font-size: 17px; width: auto; }
-      .side-tab .stlbl { display: none; }
-      .side-tab .stlock { margin-left: 0; font-size: 8px; margin-top: 2px; }
-      .side-tab:hover { transform: none; }
+      .side-tabs { padding: 5px; gap: 3px; }
+      .side-tab { flex-direction: column; padding: 8px 2px 7px; gap: 3px; font-size: 7.5px; }
+      .side-tab .sti { font-size: 16px; }
+      .side-tab .stlbl { display: block; white-space: normal; line-height: 1.15; max-width: 100%; }
+      .side-tab .stlock { margin-left: 0; font-size: 7.5px; }
       .pagehead .ptitle { font-size: 13px; }
       .about-card { padding: 16px 16px; }
     }
     @media (max-width: 420px) {
-      .side-tabs { flex: 0 0 38px; }
-      .side-tab { padding: 7px 1px; }
-      .side-tab .sti { font-size: 15px; }
+      .side-tabs { padding: 4px; }
+      .side-tab { padding: 7px 1px 6px; font-size: 6.6px; }
+      .side-tab .sti { font-size: 14px; }
     }
 
     /* ================= ABOUT TAB ================= */
