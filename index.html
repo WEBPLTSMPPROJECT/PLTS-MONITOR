@@ -766,9 +766,15 @@
               Front-end web ini di-hosting terpisah melalui <b>GitHub Pages</b>, lalu berkomunikasi dengan ESP32
               di jaringan lokal melalui terowongan (tunnel) SSH yang menjembatani akses dari luar jaringan rumah
               ke server ESP32, sehingga panel tetap bisa diakses dari mana saja tanpa IP publik permanen. Sebagai
-              pelengkap, sebuah papan <b>NodeMCU ESP8266</b> terpisah menggerakkan layar OLED kecil yang menampilkan
-              ringkasan status &mdash; tegangan baterai, level baterai, tegangan AC, dan jumlah pengunjung &mdash;
-              sebagai tampilan fisik cepat di dekat panel itu sendiri.
+              pelengkap, ESP32 yang sama juga langsung menggerakkan sebuah layar <b>LCD 16x2 I2C</b> yang
+              tertancap di board yang sama (SDA/SCL) &mdash; menampilkan ringkasan data monitoring secara
+              bergantian per halaman: tegangan &amp; persen baterai, arus &amp; daya baterai, tegangan panel
+              surya, tegangan/frekuensi serta arus/daya/power factor AC dari PZEM-004T, akumulasi energi (kWh)
+              beserta estimasi biaya (Rupiah), status limit biaya, batas arus, status keempat relay, hingga
+              jadwal timer aktif &mdash; sebagai tampilan fisik cepat langsung di panel, tanpa perlu membuka web
+              sama sekali. Layar ini bersifat opsional: sistem tetap mendeteksi kehadirannya secara otomatis
+              (hot-plug) sehingga web &amp; kontrol relay tidak akan pernah terganggu meski LCD dilepas atau
+              belum terpasang.
             </p>
           </div>
 
@@ -1458,3 +1464,4 @@
   </script>
 </body>
 </html>
+
