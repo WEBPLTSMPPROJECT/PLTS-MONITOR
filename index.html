@@ -400,16 +400,12 @@
         <div class="mh"><div class="mi it">&#9889;</div><div class="ml">Tegangan Baterai</div></div>
         <div class="mv"><span id="v">--</span><span class="mu">V</span></div>
       </div>
-      <div class="mc pc">
-        <div class="mh"><div class="mi is">&#9728;</div><div class="ml">Tegangan Panel Surya</div></div>
-        <div class="mv"><span id="vp">--</span><span class="mu">V</span></div>
-      </div>
       <div class="mc">
-        <div class="mh"><div class="mi ib">&#9195;</div><div class="ml">Arus DC</div></div>
+        <div class="mh"><div class="mi ib">&#9195;</div><div class="ml">Arus Baterai</div></div>
         <div class="mv"><span id="ic">--</span><span class="mu">A</span></div>
       </div>
       <div class="mc">
-        <div class="mh"><div class="mi is">&#9889;</div><div class="ml">Daya DC</div></div>
+        <div class="mh"><div class="mi is">&#9889;</div><div class="ml">Daya Baterai</div></div>
         <div class="mv"><span id="pw">--</span><span class="mu">W</span></div>
       </div>
       <div class="mc bc">
@@ -419,8 +415,32 @@
         <div class="blbls"><span>0%</span><span>50%</span><span>100%</span></div>
       </div>
       <div class="mc">
-        <div class="mh"><div class="mi it">&#9196;</div><div class="ml">Energi Hari Ini</div></div>
+        <div class="mh"><div class="mi it">&#9196;</div><div class="ml">Energi Hari Ini (Baterai)</div></div>
         <div class="mv"><span id="en">--</span><span class="mu">Wh</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi ig">&#128267;</div><div class="ml">Kapasitas Baterai (30Ah)</div></div>
+        <div class="mv"><span id="bwh">--</span><span class="mu">Wh</span></div>
+      </div>
+    </div>
+
+    <div class="slbl">&#9670; Data Sensor DC (Panel Surya)</div>
+    <div class="mgrid">
+      <div class="mc pc">
+        <div class="mh"><div class="mi is">&#9728;</div><div class="ml">Tegangan Panel Surya</div></div>
+        <div class="mv"><span id="vp">--</span><span class="mu">V</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi ib">&#9195;</div><div class="ml">Arus Panel Surya</div></div>
+        <div class="mv"><span id="pi">--</span><span class="mu">A</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi is">&#9889;</div><div class="ml">Daya Panel Surya</div></div>
+        <div class="mv"><span id="pp">--</span><span class="mu">W</span></div>
+      </div>
+      <div class="mc">
+        <div class="mh"><div class="mi it">&#9196;</div><div class="ml">Energi Hari Ini (Panel)</div></div>
+        <div class="mv"><span id="pe">--</span><span class="mu">Wh</span></div>
       </div>
     </div>
 
@@ -1138,6 +1158,10 @@
         document.getElementById('pw').innerText  = d.p.toFixed(1);
         document.getElementById('bt').innerText  = d.b;
         document.getElementById('en').innerText  = d.e.toFixed(1);
+        document.getElementById('bwh').innerText = d.bwh.toFixed(1);
+        document.getElementById('pi').innerText  = d.pi.toFixed(3);
+        document.getElementById('pp').innerText  = d.pp.toFixed(1);
+        document.getElementById('pe').innerText  = d.pe.toFixed(1);
         document.getElementById('bf').style.width= d.b+'%';
         document.getElementById('acv').innerText = d.acV.toFixed(1);
         document.getElementById('aci').innerText = d.acI.toFixed(2);
