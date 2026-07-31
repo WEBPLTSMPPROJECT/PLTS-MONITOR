@@ -422,6 +422,10 @@
         <div class="mh"><div class="mi ig">&#128267;</div><div class="ml">Kapasitas Baterai (30Ah)</div></div>
         <div class="mv"><span id="bwh">--</span><span class="mu">Wh</span></div>
       </div>
+      <div class="mc">
+        <div class="mh"><div class="mi ig">&#9203;</div><div class="ml">Estimasi Sisa Baterai</div></div>
+        <div class="mv"><span id="best" style="font-size:19px">--</span></div>
+      </div>
     </div>
 
     <div class="slbl">&#9670; Data Sensor DC (Panel Surya)</div>
@@ -1173,6 +1177,15 @@
         document.getElementById('bt').innerText  = d.b;
         document.getElementById('en').innerText  = d.e.toFixed(1);
         document.getElementById('bwh').innerText = d.bwh.toFixed(1);
+        var bestEl = document.getElementById('best');
+        if(d.inaBatt === 0){
+          bestEl.innerText = 'Perlu Sensor INA219';
+        } else if(d.estMin < 0){
+          bestEl.innerText = 'Charging / Idle';
+        } else {
+          var ej = Math.floor(d.estMin/60), em = d.estMin%60;
+          bestEl.innerText = (ej>99 ? '>99 jam' : (ej+' jam '+em+' menit'));
+        }
         document.getElementById('pi').innerText  = d.pi.toFixed(3);
         document.getElementById('pp').innerText  = d.pp.toFixed(1);
         document.getElementById('pe').innerText  = d.pe.toFixed(1);
