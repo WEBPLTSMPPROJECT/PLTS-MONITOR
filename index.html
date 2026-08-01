@@ -653,6 +653,7 @@
             <div class="adm-card"><div class="adm-lbl">WiFi RSSI</div><div class="adm-val" id="aRssi">--</div></div>
             <div class="adm-card"><div class="adm-lbl">IP LOKAL</div><div class="adm-val" id="aIp">--</div></div>
             <div class="adm-card"><div class="adm-lbl">IP AP</div><div class="adm-val" id="aApIp">--</div></div>
+            <div class="adm-card"><div class="adm-lbl">STATUS NTP (JAM)</div><div class="adm-val" id="aNtp">--</div></div>
             <div class="adm-card"><div class="adm-lbl">PW LOGIN</div><div class="adm-val" id="aCurPass">--</div></div>
             <div class="adm-card"><div class="adm-lbl">PW PANEL</div><div class="adm-val" id="aCurCPPass">--</div></div>
           </div>
@@ -1368,6 +1369,11 @@
         document.getElementById('aRssi').innerText    = d.rssi+' dBm';
         document.getElementById('aIp').innerText      = d.ip;
         document.getElementById('aApIp').innerText    = d.apIP;
+        var ntpEl = document.getElementById('aNtp');
+        if(ntpEl){
+          ntpEl.innerText = d.ntpSynced === 1 ? 'Sinkron' : 'GAGAL (Timer tidak jalan!)';
+          ntpEl.style.color = d.ntpSynced === 1 ? '#3ddc97' : '#ff5c5c';
+        }
         document.getElementById('aCurPass').innerText = d.loginPassword;
         var cpEl=document.getElementById('aCurCPPass'); if(cpEl) cpEl.innerText = d.cpPassword;
       }).catch(function(){});
