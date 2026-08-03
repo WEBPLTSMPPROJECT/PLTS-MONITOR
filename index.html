@@ -1338,6 +1338,16 @@
     setInterval(updData, 2000);
     setInterval(updClk,  1000);
     setInterval(refreshBase, 20000);
+    // Auto-refresh status Control Panel (uptime, free heap, RSSI, NTP, dll)
+    // tiap 1 detik -- TAPI hanya kalau tab "CONTROL PANEL" memang lagi dibuka,
+    // biar tidak kirim request sia-sia terus-menerus pas user lagi di tab lain
+    // (Monitoring/Kontrol/Tentang Web).
+    setInterval(function(){
+      var adminPane = document.getElementById('tab-admin');
+      if (adminPane && adminPane.classList.contains('active')) {
+        loadAdmStatus();
+      }
+    }, 1000);
 
     // ===== CONTROL PANEL JS (pakai cpToken, BUKAN adminToken) =====
     // qs (opsional): parameter tambahan, misal 'newpass=xxxx&foo=bar'
